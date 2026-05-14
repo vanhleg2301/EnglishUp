@@ -7,6 +7,7 @@ import { ArrowLeft, MessageSquare, Play, Square, Languages, BookOpen, Volume2, C
 import { conversations } from '@/lib/conversationData';
 import type { Conversation, KeyPhrase } from '@/lib/conversationData';
 import { useBadges } from '@/hooks/useBadges';
+import AppShell from '@/components/AppShell';
 
 const LEVEL_STYLE: Record<string, string> = {
   B1: 'bg-white/8 text-white/60 border-white/15',
@@ -64,8 +65,9 @@ export default function ConversationPage() {
   }, [trackConversationOpened]);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden">
-      <header className="border-b border-white/5 backdrop-blur-xl bg-black/50 sticky top-0 z-10">
+    <AppShell>
+    <div className="text-white overflow-x-hidden">
+      <header className="sticky top-0 z-10 bg-[#07070f]/90 backdrop-blur-md border-b border-white/[0.06]">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-4">
           {selected ? (
             <motion.button
@@ -125,6 +127,7 @@ export default function ConversationPage() {
         )}
       </AnimatePresence>
     </div>
+    </AppShell>
   );
 }
 

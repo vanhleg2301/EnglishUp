@@ -137,7 +137,13 @@ const CURRICULUM = [
   },
 ];
 
-const PRICING = [
+interface PricingFeature { text: string; locked: boolean; highlight?: boolean }
+interface PricingPlan {
+  name: string; price: string; period: string; desc: string;
+  color: string; highlight: boolean; badge?: string;
+  features: PricingFeature[]; cta: string; ctaStyle: string; href: string;
+}
+const PRICING: PricingPlan[] = [
   {
     name: 'Free',
     price: 'Free',
@@ -273,16 +279,27 @@ export default function LandingPage() {
             ))}
           </nav>
 
-          <Link href="/app">
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white text-black text-sm font-bold hover:bg-white/90 transition-colors"
-            >
-              <span>Go to app</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </motion.button>
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link href="/auth/login">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="px-4 py-2 rounded-xl text-white/60 hover:text-white text-sm font-semibold transition-colors"
+              >
+                Log in
+              </motion.button>
+            </Link>
+            <Link href="/auth/signup">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white text-black text-sm font-bold hover:bg-white/90 transition-colors"
+              >
+                <span>Get started</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </motion.button>
+            </Link>
+          </div>
         </div>
       </motion.header>
 
@@ -480,7 +497,7 @@ export default function LandingPage() {
                   />
                   <div className="relative p-6 rounded-2xl bg-white/[0.03] border border-white/[0.07] group-hover:border-white/15 transition-all h-full flex flex-col">
                     {f.badge && (
-                      <span className="absolute top-4 right-4 text-[10px] font-bold px-2 py-0.5 rounded-full bg-violet-500/20 text-violet-300 border border-violet-500/30">
+                      <span className={`absolute top-4 right-4 text-[10px] font-bold px-2 py-0.5 rounded-full border ${f.badgeStyle ?? 'bg-violet-500/20 text-violet-300 border-violet-500/30'}`}>
                         {f.badge}
                       </span>
                     )}

@@ -5,14 +5,15 @@ import { useEffect } from 'react';
 import Link from 'next/link';
 import {
   Flame, Zap, Lock, CheckCircle, Star,
-  BookOpen, ChevronRight,
-  Layers, MessageSquare, Music2, Clock, Link2, LayoutGrid,
+  ChevronRight, Layers, MessageSquare, Music2, Clock, Link2, LayoutGrid, Bot,
+  Target, TrendingUp,
 } from 'lucide-react';
 import { useProgress } from '@/hooks/useProgress';
 import { useDailyChallenge } from '@/hooks/useDailyChallenge';
 import { useBadges } from '@/hooks/useBadges';
 import { lessons } from '@/lib/lessonData';
 import type { DayLesson } from '@/types';
+import AppShell from '@/components/AppShell';
 
 const TYPE_LABELS = {
   'fill-blank': 'Fill in the Blank',
@@ -22,56 +23,101 @@ const TYPE_LABELS = {
 
 const FEATURES = [
   {
-    id: 'lessons',
-    href: '/lesson/1',
-    icon: BookOpen,
-    title: '30-Day Speaking Course',
-    desc: 'From first awkward meeting to confident communication',
-    sub: '30 lessons, about 10–15 min each',
-  },
-  {
     id: 'shadowing',
     href: '/shadowing',
     icon: Layers,
     title: 'Shadowing',
-    desc: 'Listen and mimic — the only real way to train your accent',
-    sub: '30 sample sentences, A2 through C1',
+    desc: 'Train your accent by mimicking native speakers',
+  },
+  {
+    id: 'ai-chat',
+    href: '/ai-chat',
+    icon: Bot,
+    title: 'AI Chat',
+    desc: 'Practice real scenarios with instant corrections',
+    isPro: true,
   },
   {
     id: 'phrases',
     href: '/phrases',
     icon: LayoutGrid,
     title: 'Phrases & Chunks',
-    desc: 'Learn collocations, phrasal verbs, and idioms — not single words',
-    sub: '50+ real phrases: office, tech, meetings, email',
-    isNew: true,
+    desc: '50+ collocations, idioms, and real office language',
   },
   {
     id: 'conversation',
     href: '/conversation',
     icon: MessageSquare,
     title: 'Real Conversations',
-    desc: 'Slang and idioms you won\'t find in any textbook',
-    sub: '6 real tech workplace scenarios',
+    desc: '6 tech workplace scenarios with key phrases',
   },
   {
     id: 'alphabet',
     href: '/alphabet',
     icon: Music2,
     title: 'IPA Phonetics',
-    desc: 'Why you get misheard even when you spell things right',
-    sub: 'Focused on sounds Vietnamese speakers get wrong most',
-    isNew: true,
+    desc: 'Sounds Vietnamese speakers struggle with most',
   },
   {
     id: 'sources',
     href: '/sources',
     icon: Link2,
     title: 'Learning Sources',
-    desc: 'Every reference used to build the content on this site',
-    sub: 'Books, videos, research, and real-world data',
+    desc: 'Every reference used to build this content',
   },
 ];
+
+const ACCENT_COLORS = {
+  amber: {
+    bg: 'bg-amber-500/10',
+    border: 'border-amber-500/20',
+    icon: 'text-amber-400',
+    value: 'text-amber-300',
+  },
+  violet: {
+    bg: 'bg-violet-500/10',
+    border: 'border-violet-500/20',
+    icon: 'text-violet-400',
+    value: 'text-violet-300',
+  },
+  emerald: {
+    bg: 'bg-emerald-500/10',
+    border: 'border-emerald-500/20',
+    icon: 'text-emerald-400',
+    value: 'text-emerald-300',
+  },
+  cyan: {
+    bg: 'bg-cyan-500/10',
+    border: 'border-cyan-500/20',
+    icon: 'text-cyan-400',
+    value: 'text-cyan-300',
+  },
+} as const;
+
+function StatCard({
+  icon: Icon,
+  label,
+  value,
+  accent,
+}: {
+  icon: React.ElementType;
+  label: string;
+  value: string | number;
+  accent: keyof typeof ACCENT_COLORS;
+}) {
+  const c = ACCENT_COLORS[accent];
+  return (
+    <div className={`p-4 rounded-2xl bg-white/[0.03] border border-white/[0.07] flex flex-col gap-3`}>
+      <div className={`w-9 h-9 rounded-xl ${c.bg} border ${c.border} flex items-center justify-center`}>
+        <Icon className={`w-4 h-4 ${c.icon}`} />
+      </div>
+      <div>
+        <p className={`text-2xl font-black ${c.value}`}>{value}</p>
+        <p className="text-white/30 text-xs mt-0.5">{label}</p>
+      </div>
+    </div>
+  );
+}
 
 export default function HomePage() {
   const { progress, loading, isDayCompleted, isDayUnlocked, getDayScore } = useProgress();
@@ -94,259 +140,214 @@ export default function HomePage() {
   const nextLesson = !loading ? lessons.find((l) => isDayUnlocked(l.day) && !isDayCompleted(l.day)) : null;
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden">
-      {/* Header */}
-      <header className="border-b border-white/[0.06] backdrop-blur-xl bg-black/50 sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center font-bold text-sm">
-              EN
-            </div>
-            <div>
-              <p className="font-extrabold text-base leading-none tracking-tight">EnglishUp</p>
-              <p className="text-white/30 text-xs">for developers</p>
-            </div>
-          </div>
-
-          {!loading && (
-            <div className="flex items-center gap-2">
-              <StreakChip streak={progress.streak} />
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.05] border border-white/[0.08]">
-                <Zap className="w-3.5 h-3.5 text-white/60" />
-                <span className="text-white/70 font-bold text-sm">{progress.totalXP}</span>
-              </div>
-            </div>
-          )}
+    <AppShell>
+      <div className="max-w-5xl mx-auto px-4 md:px-8 pb-16">
+        {/* Page header */}
+        <div className="pt-8 pb-6 border-b border-white/[0.05] mb-8">
+          <h1 className="text-2xl md:text-3xl font-black text-white">Dashboard</h1>
+          <p className="text-white/30 text-sm mt-1">Your learning overview</p>
         </div>
-      </header>
 
-      <main className="max-w-4xl mx-auto px-4 pb-16">
+        {/* Stat cards */}
+        {!loading && (
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+            <StatCard icon={Flame} label="Day Streak" value={progress.streak} accent="amber" />
+            <StatCard icon={Zap} label="Total XP" value={progress.totalXP} accent="violet" />
+            <StatCard icon={Target} label="Days Done" value={`${completedDays}/${totalDays}`} accent="emerald" />
+            <StatCard icon={TrendingUp} label="Progress" value={`${overallProgress}%`} accent="cyan" />
+          </div>
+        )}
 
-        {/* Hero */}
-        <section className="pt-10 pb-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="space-y-3"
-          >
-            <p className="text-white/30 text-sm font-medium uppercase tracking-widest">english for the real world</p>
-            <h1 className="text-4xl md:text-5xl font-black leading-[1.1] tracking-tight">
-              Speak English
-              <br />
-              <span className="text-white/40">without the fear</span>
-            </h1>
-            <p className="text-white/35 text-sm max-w-sm leading-relaxed">
-              Not for exams. For meetings, emails, and working with teammates who don't speak your language.
-            </p>
-          </motion.div>
-
-          {/* Continue CTA */}
-          {nextLesson && (
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="mt-6"
-            >
-              <Link href={`/lesson/${nextLesson.day}`}>
-                <motion.div
-                  whileHover={{ scale: 1.01 }}
-                  whileTap={{ scale: 0.99 }}
-                  className="flex items-center justify-between gap-4 p-4 rounded-2xl bg-white text-black cursor-pointer"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-black/10 flex items-center justify-center text-xl flex-shrink-0">
-                      {nextLesson.emoji}
-                    </div>
-                    <div>
-                      <p className="text-black/50 text-xs font-semibold uppercase tracking-wider">
-                        {completedDays === 0 ? 'Start' : 'Continue'} · Day {nextLesson.day}
-                      </p>
-                      <p className="font-bold text-sm">{nextLesson.title}</p>
-                    </div>
+        {/* Continue lesson */}
+        {nextLesson && (
+          <div className="mb-6">
+            <Link href={`/lesson/${nextLesson.day}`}>
+              <motion.div
+                whileHover={{ scale: 1.005 }}
+                whileTap={{ scale: 0.995 }}
+                className="flex items-center justify-between gap-4 p-5 rounded-2xl bg-white text-black cursor-pointer"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-black/8 flex items-center justify-center text-2xl flex-shrink-0">
+                    {nextLesson.emoji}
                   </div>
-                  <ChevronRight className="w-4 h-4 text-black/40 flex-shrink-0" />
-                </motion.div>
-              </Link>
-            </motion.div>
-          )}
+                  <div>
+                    <p className="text-black/40 text-xs font-bold uppercase tracking-wider">
+                      {completedDays === 0 ? 'Start' : 'Continue'} · Day {nextLesson.day}
+                    </p>
+                    <p className="font-bold text-base mt-0.5">{nextLesson.title}</p>
+                    <p className="text-black/40 text-xs mt-0.5">{nextLesson.subtitle}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <span className="text-xs font-semibold text-black/40">{nextLesson.xpReward} XP</span>
+                  <ChevronRight className="w-5 h-5 text-black/30" />
+                </div>
+              </motion.div>
+            </Link>
 
-          {/* Progress bar */}
-          {completedDays > 0 && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="mt-4 space-y-1.5"
-            >
-              <div className="flex justify-between text-xs text-white/25">
-                <span>{completedDays}/{totalDays} days done</span>
-                <span>{overallProgress}%</span>
+            {completedDays > 0 && (
+              <div className="mt-3 space-y-1">
+                <div className="flex justify-between text-xs text-white/20">
+                  <span>{completedDays}/{totalDays} days done</span>
+                  <span>{overallProgress}%</span>
+                </div>
+                <div className="h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
+                  <motion.div
+                    className="h-full bg-gradient-to-r from-violet-500 to-indigo-500 rounded-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${overallProgress}%` }}
+                    transition={{ delay: 0.4, duration: 0.8, ease: 'easeOut' }}
+                  />
+                </div>
               </div>
-              <div className="h-1.5 bg-white/8 rounded-full overflow-hidden">
-                <motion.div
-                  className="h-full bg-white/60 rounded-full"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${overallProgress}%` }}
-                  transition={{ delay: 0.5, duration: 0.8, ease: 'easeOut' }}
-                />
-              </div>
-            </motion.div>
-          )}
-        </section>
+            )}
+          </div>
+        )}
 
         {/* Daily Challenge */}
-        <section className="mb-6">
+        <div className="mb-8">
           <Link href="/daily-challenge">
             <motion.div
-              whileHover={{ scale: 1.01 }}
-              whileTap={{ scale: 0.99 }}
-              className={`p-4 rounded-2xl border transition-all cursor-pointer ${
+              whileHover={{ scale: 1.005 }}
+              whileTap={{ scale: 0.995 }}
+              className={`p-4 rounded-2xl border cursor-pointer transition-all ${
                 challengeCompleted
-                  ? 'border-white/10 bg-white/[0.03]'
-                  : 'border-white/15 bg-white/[0.05] hover:border-white/25'
+                  ? 'border-white/[0.07] bg-white/[0.02]'
+                  : 'border-amber-500/25 bg-amber-500/[0.04] hover:border-amber-500/40'
               }`}
             >
               {challengeCompleted ? (
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-white/8 border border-white/10 flex items-center justify-center text-base flex-shrink-0">
+                  <div className="w-9 h-9 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center text-base flex-shrink-0">
                     ✓
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-white/60 text-sm font-semibold">Today's challenge done</p>
-                    <p className="text-white/25 text-xs mt-0.5 flex items-center gap-1">
+                    <p className="text-white/50 text-sm font-semibold">Today's challenge done</p>
+                    <p className="text-white/20 text-xs mt-0.5 flex items-center gap-1">
                       <Clock className="w-3 h-3" />
                       Next challenge in {countdown}
                     </p>
                   </div>
                   {challengeStreak > 0 && (
-                    <span className="text-white/30 text-xs flex items-center gap-1 flex-shrink-0">
+                    <span className="text-white/25 text-xs flex items-center gap-1 flex-shrink-0">
                       🔥 {challengeStreak}
                     </span>
                   )}
                 </div>
               ) : (
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-white/8 border border-white/10 flex items-center justify-center text-base flex-shrink-0">
+                  <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/25 flex items-center justify-center text-base flex-shrink-0">
                     ⚡
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-white font-bold text-sm">Daily Challenge</p>
-                    <p className="text-white/35 text-xs mt-0.5">{TYPE_LABELS[challenge.type]} · +{challenge.xpReward} XP</p>
+                    <p className="text-white/35 text-xs mt-0.5">
+                      {TYPE_LABELS[challenge.type]} · +{challenge.xpReward} XP
+                    </p>
                   </div>
-                  <div className="px-3 py-1.5 rounded-xl bg-white text-black text-xs font-bold flex-shrink-0">
+                  <div className="px-3 py-1.5 rounded-xl bg-amber-500/20 border border-amber-500/30 text-amber-300 text-xs font-bold flex-shrink-0">
                     Go
                   </div>
                 </div>
               )}
             </motion.div>
           </Link>
-        </section>
-
-        {/* Feature Grid */}
-        <section className="mb-12">
-          <p className="text-white/25 text-xs uppercase tracking-widest font-semibold mb-4">pick what fits you</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {FEATURES.map((f, i) => {
-              const Icon = f.icon;
-              return (
-                <motion.div
-                  key={f.id}
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 + i * 0.07 }}
-                >
-                  <Link href={f.href}>
-                    <motion.div
-                      whileHover={{ scale: 1.01 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="flex items-start gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/[0.07] hover:bg-white/[0.06] hover:border-white/[0.12] transition-all cursor-pointer group"
-                    >
-                      <div className="w-10 h-10 rounded-xl bg-white/8 border border-white/10 flex items-center justify-center flex-shrink-0">
-                        <Icon className="w-4 h-4 text-white/60 group-hover:text-white/80 transition-colors" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <p className="font-bold text-sm text-white">{f.title}</p>
-                          {f.isNew && (
-                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-white/10 text-white/60 border border-white/15">
-                              NEW
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-white/40 text-xs mt-0.5">{f.desc}</p>
-                        <p className="text-white/20 text-xs mt-0.5">{f.sub}</p>
-                      </div>
-                      <ChevronRight className="w-4 h-4 text-white/15 group-hover:text-white/40 transition-colors flex-shrink-0 mt-0.5" />
-                    </motion.div>
-                  </Link>
-                </motion.div>
-              );
-            })}
-          </div>
-        </section>
+        </div>
 
         {/* Badges */}
         {earnedBadges.length > 0 && (
-          <section className="mb-10">
-            <p className="text-white/25 text-xs uppercase tracking-widest font-semibold mb-4">your badges</p>
-            <div className="flex flex-wrap gap-3">
+          <div className="mb-8">
+            <p className="text-white/20 text-xs uppercase tracking-widest font-semibold mb-4">Your badges</p>
+            <div className="flex flex-wrap gap-2">
               {earnedBadges.map((b) => (
                 <motion.div
                   key={b.id}
                   initial={{ scale: 0, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
-                  className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.08]"
+                  className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.07]"
                 >
                   <span className="text-xl leading-none">{b.icon}</span>
                   <div>
                     <p className="text-white text-xs font-bold leading-none">{b.title}</p>
-                    <p className="text-white/30 text-[10px] mt-0.5">{b.description}</p>
+                    <p className="text-white/25 text-[10px] mt-0.5">{b.description}</p>
                   </div>
                 </motion.div>
               ))}
             </div>
-          </section>
+          </div>
         )}
 
-        {/* Week 1 */}
+        {/* Quick access features */}
+        <div className="mb-10">
+          <p className="text-white/20 text-xs uppercase tracking-widest font-semibold mb-4">Learning tools</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+            {FEATURES.map((f, i) => {
+              const Icon = f.icon;
+              return (
+                <motion.div
+                  key={f.id}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.05 + i * 0.06 }}
+                >
+                  <Link href={f.href}>
+                    <div className="flex items-start gap-3 p-4 rounded-xl bg-white/[0.025] border border-white/[0.06] hover:bg-white/[0.05] hover:border-white/[0.10] transition-all group cursor-pointer">
+                      <div className="w-9 h-9 rounded-lg bg-white/[0.06] border border-white/[0.08] flex items-center justify-center flex-shrink-0">
+                        <Icon className="w-4 h-4 text-white/40 group-hover:text-white/70 transition-colors" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <p className="font-semibold text-sm text-white/80 group-hover:text-white transition-colors">
+                            {f.title}
+                          </p>
+                          {f.isPro && (
+                            <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-violet-500/20 text-violet-300 border border-violet-500/30">
+                              PRO
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-white/30 text-xs mt-0.5 leading-relaxed">{f.desc}</p>
+                      </div>
+                    </div>
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Week sections */}
         <WeekSection
           title="Week 1 — Office"
-          subtitle="familiar situations from the workplace"
+          subtitle="Familiar situations from the workplace"
           days={officeWeek}
           isDayCompleted={isDayCompleted}
           isDayUnlocked={isDayUnlocked}
           getDayScore={getDayScore}
           loading={loading}
         />
-
-        {/* Week 2 */}
         <WeekSection
           title="Week 2 — Travel"
-          subtitle="navigating the world without just pointing"
+          subtitle="Navigating the world without just pointing"
           days={travelWeek}
           isDayCompleted={isDayCompleted}
           isDayUnlocked={isDayUnlocked}
           getDayScore={getDayScore}
           loading={loading}
         />
-
-        {/* Week 3 */}
         <WeekSection
           title="Week 3 — Tech Communication"
-          subtitle="code reviews, stand-ups, demos, and the jargon nobody teaches you"
+          subtitle="Code reviews, stand-ups, demos, and the jargon nobody teaches"
           days={techWeek}
           isDayCompleted={isDayCompleted}
           isDayUnlocked={isDayUnlocked}
           getDayScore={getDayScore}
           loading={loading}
         />
-
-        {/* Week 4 */}
         <WeekSection
           title="Week 4 — Career English"
-          subtitle="interviews, negotiation, networking, and feedback that lands"
+          subtitle="Interviews, negotiation, networking, and feedback"
           days={careerWeek}
           isDayCompleted={isDayCompleted}
           isDayUnlocked={isDayUnlocked}
@@ -354,11 +355,11 @@ export default function HomePage() {
           loading={loading}
         />
 
-        {/* Days 29–30 */}
-        <section className="mt-8 space-y-3">
-          <div className="px-1 mb-4">
+        {/* Final days */}
+        <div className="mt-10 space-y-3">
+          <div className="mb-4">
             <h2 className="text-white font-bold text-base">Final Days</h2>
-            <p className="text-white/30 text-xs mt-0.5">advanced conversations + mastery challenge</p>
+            <p className="text-white/25 text-xs mt-0.5">Advanced conversations + mastery challenge</p>
           </div>
           {finalDays.map((lesson) => (
             <DayCard
@@ -371,16 +372,24 @@ export default function HomePage() {
               isFinal={lesson.day === 30}
             />
           ))}
-        </section>
-      </main>
-    </div>
+        </div>
+      </div>
+    </AppShell>
   );
 }
 
 function WeekSection({
-  title, subtitle, days, isDayCompleted, isDayUnlocked, getDayScore, loading,
+  title,
+  subtitle,
+  days,
+  isDayCompleted,
+  isDayUnlocked,
+  getDayScore,
+  loading,
 }: {
-  title: string; subtitle: string; days: DayLesson[];
+  title: string;
+  subtitle: string;
+  days: DayLesson[];
   isDayCompleted: (d: number) => boolean;
   isDayUnlocked: (d: number) => boolean;
   getDayScore: (d: number) => number;
@@ -395,7 +404,7 @@ function WeekSection({
         className="mb-5"
       >
         <h2 className="text-base font-bold text-white">{title}</h2>
-        <p className="text-white/30 text-xs mt-0.5">{subtitle}</p>
+        <p className="text-white/25 text-xs mt-0.5">{subtitle}</p>
       </motion.div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {days.map((lesson, i) => (
@@ -421,10 +430,19 @@ function WeekSection({
 }
 
 function DayCard({
-  lesson, isCompleted, isUnlocked, score = 0, loading, isFinal = false,
+  lesson,
+  isCompleted,
+  isUnlocked,
+  score = 0,
+  loading,
+  isFinal = false,
 }: {
-  lesson: DayLesson; isCompleted: boolean; isUnlocked: boolean;
-  score?: number; loading: boolean; isFinal?: boolean;
+  lesson: DayLesson;
+  isCompleted: boolean;
+  isUnlocked: boolean;
+  score?: number;
+  loading: boolean;
+  isFinal?: boolean;
 }) {
   const isLocked = !isUnlocked && !loading;
   const stars = score >= 90 ? 3 : score >= 60 ? 2 : 1;
@@ -435,10 +453,10 @@ function DayCard({
       whileTap={!isLocked ? { scale: 0.99 } : {}}
       className={`relative rounded-2xl border transition-all duration-200 ${isFinal ? 'p-5' : 'p-4'} ${
         isCompleted
-          ? 'border-white/15 bg-white/[0.05]'
+          ? 'border-white/[0.12] bg-white/[0.04]'
           : isLocked
           ? 'border-white/[0.04] bg-white/[0.01] opacity-40 cursor-not-allowed'
-          : 'border-white/[0.07] bg-white/[0.03] hover:border-white/15 hover:bg-white/[0.06] cursor-pointer'
+          : 'border-white/[0.07] bg-white/[0.025] hover:border-white/[0.13] hover:bg-white/[0.05] cursor-pointer'
       }`}
     >
       <div className={`relative z-10 ${isFinal ? 'text-center' : 'flex items-start gap-3'}`}>
@@ -447,14 +465,14 @@ function DayCard({
             className={`${isFinal ? 'w-16 h-16' : 'w-11 h-11'} rounded-xl flex items-center justify-center`}
             style={
               !isLocked
-                ? { background: `linear-gradient(135deg, ${lesson.gradient[0]}70, ${lesson.gradient[1]}50)` }
-                : { background: 'rgba(255,255,255,0.04)' }
+                ? { background: `linear-gradient(135deg, ${lesson.gradient[0]}60, ${lesson.gradient[1]}40)` }
+                : { background: 'rgba(255,255,255,0.03)' }
             }
           >
             {isLocked ? (
-              <Lock className="w-4 h-4 text-white/20" />
+              <Lock className="w-4 h-4 text-white/15" />
             ) : isCompleted ? (
-              <CheckCircle className={`${isFinal ? 'w-8 h-8' : 'w-5 h-5'} text-white/70`} />
+              <CheckCircle className={`${isFinal ? 'w-8 h-8' : 'w-5 h-5'} text-white/60`} />
             ) : (
               <span className={isFinal ? 'text-3xl' : 'text-xl'}>{lesson.emoji}</span>
             )}
@@ -463,27 +481,35 @@ function DayCard({
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-white/30">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-white/25">
               Day {lesson.day}
             </span>
             {isCompleted && (
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-0.5">
                 {[1, 2, 3].map((s) => (
                   <Star
                     key={s}
-                    className={`w-2.5 h-2.5 ${s <= stars ? 'text-white/60 fill-white/60' : 'text-white/10 fill-white/5'}`}
+                    className={`w-2.5 h-2.5 ${
+                      s <= stars ? 'text-amber-400 fill-amber-400' : 'text-white/10 fill-white/5'
+                    }`}
                   />
                 ))}
               </div>
             )}
           </div>
-          <h3 className={`font-bold mt-0.5 ${isFinal ? 'text-xl' : 'text-sm'} ${isLocked ? 'text-white/20' : 'text-white'}`}>
+          <h3
+            className={`font-bold mt-0.5 ${isFinal ? 'text-xl' : 'text-sm'} ${
+              isLocked ? 'text-white/15' : 'text-white'
+            }`}
+          >
             {lesson.title}
           </h3>
-          <p className={`text-xs mt-0.5 ${isLocked ? 'text-white/15' : 'text-white/35'}`}>{lesson.subtitle}</p>
+          <p className={`text-xs mt-0.5 ${isLocked ? 'text-white/10' : 'text-white/30'}`}>
+            {lesson.subtitle}
+          </p>
 
           {!isLocked && (
-            <div className="flex items-center gap-2 mt-2 text-[10px] text-white/25">
+            <div className="flex items-center gap-2 mt-2 text-[10px] text-white/20">
               <span>{lesson.xpReward} XP</span>
               <span>·</span>
               <span>{lesson.vocabulary.length} words</span>
@@ -498,37 +524,4 @@ function DayCard({
 
   if (isLocked || loading) return card;
   return <Link href={`/lesson/${lesson.day}`}>{card}</Link>;
-}
-
-function StreakChip({ streak }: { streak: number }) {
-  const isHot = streak >= 7;
-  const isFire = streak >= 30;
-
-  return (
-    <motion.div
-      animate={isHot ? { boxShadow: ['0 0 0px rgba(251,191,36,0)', '0 0 10px rgba(251,191,36,0.25)', '0 0 0px rgba(251,191,36,0)'] } : {}}
-      transition={{ repeat: Infinity, duration: 2.5 }}
-      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-all ${
-        isFire ? 'bg-orange-500/10 border-orange-500/30' :
-        isHot ? 'bg-amber-500/10 border-amber-500/20' :
-        'bg-white/[0.05] border-white/[0.08]'
-      }`}
-    >
-      <motion.div
-        animate={isHot ? { scale: [1, 1.2, 1] } : {}}
-        transition={{ repeat: Infinity, duration: 1.8 }}
-      >
-        <Flame className={`${
-          isFire ? 'w-5 h-5 text-orange-400' :
-          isHot ? 'w-4 h-4 text-amber-400' :
-          'w-3.5 h-3.5 text-white/60'
-        }`} />
-      </motion.div>
-      <span className={`font-bold text-sm ${
-        isFire ? 'text-orange-300' :
-        isHot ? 'text-amber-300' :
-        'text-white/70'
-      }`}>{streak}</span>
-    </motion.div>
-  );
 }

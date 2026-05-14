@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { ArrowLeft, Volume2, CheckCircle, XCircle, Zap, Clock } from 'lucide-react';
 import { useDailyChallenge } from '@/hooks/useDailyChallenge';
 import { useProgress } from '@/hooks/useProgress';
+import AppShell from '@/components/AppShell';
 
 const TYPE_LABELS = {
   'fill-blank': 'Fill in the Blank',
@@ -60,8 +61,9 @@ export default function DailyChallengePage() {
   const isFillBlank = challenge.type === 'fill-blank';
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden">
-      <header className="border-b border-white/5 backdrop-blur-xl bg-black/50 sticky top-0 z-10">
+    <AppShell>
+    <div className="text-white overflow-x-hidden">
+      <header className="sticky top-0 z-10 bg-[#07070f]/90 backdrop-blur-md border-b border-white/[0.06]">
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-4">
           <Link href="/app">
             <motion.button whileTap={{ scale: 0.9 }} className="p-2 rounded-xl bg-white/5 text-white/50 hover:text-white hover:bg-white/10 transition-all">
@@ -251,5 +253,6 @@ export default function DailyChallengePage() {
         </div>
       </main>
     </div>
+    </AppShell>
   );
 }

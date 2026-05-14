@@ -4,6 +4,7 @@ import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { ArrowLeft, Volume2, AlertTriangle } from 'lucide-react';
+import AppShell from '@/components/AppShell';
 
 type Group = 'vowels' | 'diphthongs' | 'consonants';
 
@@ -103,8 +104,9 @@ export default function AlphabetPage() {
   const trickyCount = phonemes.filter((p) => p.tricky).length;
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden">
-      <header className="border-b border-white/5 backdrop-blur-xl bg-black/50 sticky top-0 z-10">
+    <AppShell>
+    <div className="text-white overflow-x-hidden">
+      <header className="sticky top-0 z-10 bg-[#07070f]/90 backdrop-blur-md border-b border-white/[0.06]">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-4">
           <Link href="/app">
             <motion.button
@@ -267,5 +269,6 @@ export default function AlphabetPage() {
         )}
       </AnimatePresence>
     </div>
+    </AppShell>
   );
 }

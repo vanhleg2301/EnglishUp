@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { ArrowLeft, Volume2, RotateCcw, ChevronRight, BookOpen, Zap } from 'lucide-react';
 import { phrases, categoryMeta, typeLabels, CATEGORIES } from '@/lib/phrasesData';
 import type { Phrase, PhraseCategory } from '@/lib/phrasesData';
+import AppShell from '@/components/AppShell';
 
 function speakText(text: string) {
   window.speechSynthesis.cancel();
@@ -311,8 +312,9 @@ export default function PhrasesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden">
-      <header className="border-b border-white/5 backdrop-blur-xl bg-black/50 sticky top-0 z-10">
+    <AppShell>
+    <div className="text-white overflow-x-hidden">
+      <header className="sticky top-0 z-10 bg-[#07070f]/90 backdrop-blur-md border-b border-white/[0.06]">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-4">
           <Link href="/app">
             <motion.button
@@ -484,5 +486,6 @@ export default function PhrasesPage() {
         </AnimatePresence>
       </main>
     </div>
+    </AppShell>
   );
 }

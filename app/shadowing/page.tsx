@@ -7,6 +7,7 @@ import { ArrowLeft, Layers, ChevronRight } from 'lucide-react';
 import { shadowingItems, levelColors, categoryLabels } from '@/lib/shadowingData';
 import type { ShadowLevel, ShadowCategory, ShadowingItem } from '@/lib/shadowingData';
 import ShadowingPlayer from '@/components/shadowing/ShadowingPlayer';
+import AppShell from '@/components/AppShell';
 
 const LEVELS: ShadowLevel[] = ['A2', 'B1', 'B2', 'C1'];
 const CATEGORIES: (ShadowCategory | 'all')[] = ['all', 'office', 'travel', 'daily', 'business'];
@@ -32,9 +33,10 @@ export default function ShadowingPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden relative">
+    <AppShell>
+    <div className="text-white overflow-x-hidden relative">
       {/* Header */}
-      <header className="relative z-10 border-b border-white/[0.06] backdrop-blur-xl bg-black/50 sticky top-0">
+      <header className="sticky top-0 z-10 bg-[#07070f]/90 backdrop-blur-md border-b border-white/[0.06]">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-4">
           <Link href="/app">
             <motion.button
@@ -164,6 +166,7 @@ export default function ShadowingPage() {
         </AnimatePresence>
       </main>
     </div>
+    </AppShell>
   );
 }
 

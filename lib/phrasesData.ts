@@ -33,7 +33,7 @@ export const phrases: Phrase[] = [
     type: 'collocation', category: 'office',
     examples: [
       { en: 'We need to make a decision by end of day.', vi: 'Chúng ta cần ra quyết định trước cuối ngày.' },
-      { en: 'It's not easy to make a decision with limited data.', vi: 'Rất khó ra quyết định khi dữ liệu còn hạn chế.' },
+      { en: "It's not easy to make a decision with limited data.", vi: 'Rất khó ra quyết định khi dữ liệu còn hạn chế.' },
     ],
     notes: 'Không nói "do a decision" — luôn dùng "make".',
   },
@@ -57,7 +57,7 @@ export const phrases: Phrase[] = [
     id: 'o4', phrase: 'take responsibility', translation: 'Nhận trách nhiệm / chịu trách nhiệm',
     type: 'collocation', category: 'office',
     examples: [
-      { en: 'I'll take responsibility for the deployment failure.', vi: 'Tôi sẽ chịu trách nhiệm về lỗi triển khai này.' },
+      { en: "I'll take responsibility for the deployment failure.", vi: 'Tôi sẽ chịu trách nhiệm về lỗi triển khai này.' },
       { en: 'A good leader takes responsibility for their team.', vi: 'Một leader giỏi chịu trách nhiệm cho cả team.' },
     ],
   },
@@ -74,15 +74,15 @@ export const phrases: Phrase[] = [
     type: 'collocation', category: 'office',
     examples: [
       { en: 'Could you give me feedback on my presentation?', vi: 'Bạn có thể góp ý cho bài thuyết trình của tôi không?' },
-      { en: 'It's important to give constructive feedback.', vi: 'Điều quan trọng là phải đưa ra phản hồi mang tính xây dựng.' },
+      { en: "It's important to give constructive feedback.", vi: 'Điều quan trọng là phải đưa ra phản hồi mang tính xây dựng.' },
     ],
   },
   {
     id: 'o7', phrase: 'follow up on', translation: 'Theo dõi / tiếp tục xử lý',
     type: 'phrasal', category: 'office',
     examples: [
-      { en: 'I'll follow up on this issue tomorrow.', vi: 'Tôi sẽ theo dõi vấn đề này vào ngày mai.' },
-      { en: 'Has anyone followed up on the client's request?', vi: 'Có ai theo dõi yêu cầu của khách hàng chưa?' },
+      { en: "I'll follow up on this issue tomorrow.", vi: 'Tôi sẽ theo dõi vấn đề này vào ngày mai.' },
+      { en: "Has anyone followed up on the client's request?", vi: 'Có ai theo dõi yêu cầu của khách hàng chưa?' },
     ],
   },
   {
@@ -90,7 +90,7 @@ export const phrases: Phrase[] = [
     type: 'phrasal', category: 'office',
     examples: [
       { en: 'Feel free to reach out to me anytime.', vi: 'Hãy liên hệ với tôi bất cứ lúc nào.' },
-      { en: 'I'll reach out to the vendor for a quote.', vi: 'Tôi sẽ liên hệ nhà cung cấp để xin báo giá.' },
+      { en: "I'll reach out to the vendor for a quote.", vi: 'Tôi sẽ liên hệ nhà cung cấp để xin báo giá.' },
     ],
   },
   {
@@ -98,7 +98,7 @@ export const phrases: Phrase[] = [
     type: 'phrasal', category: 'office',
     examples: [
       { en: 'Let me check and get back to you by noon.', vi: 'Để tôi kiểm tra và phản hồi lại bạn trước trưa.' },
-      { en: 'I'll get back to the client with an update.', vi: 'Tôi sẽ liên hệ lại khách hàng để cập nhật.' },
+      { en: "I'll get back to the client with an update.", vi: 'Tôi sẽ liên hệ lại khách hàng để cập nhật.' },
     ],
   },
   {
@@ -106,7 +106,7 @@ export const phrases: Phrase[] = [
     type: 'expression', category: 'office',
     examples: [
       { en: 'Keep me posted on how the release goes.', vi: 'Cập nhật cho tôi biết quá trình release thế nào nhé.' },
-      { en: 'I'll keep you posted as things develop.', vi: 'Tôi sẽ cập nhật cho bạn khi có tiến triển.' },
+      { en: "I'll keep you posted as things develop.", vi: 'Tôi sẽ cập nhật cho bạn khi có tiến triển.' },
     ],
   },
   {
@@ -121,8 +121,8 @@ export const phrases: Phrase[] = [
     id: 'o12', phrase: 'wrap up', translation: 'Kết thúc / hoàn tất',
     type: 'phrasal', category: 'office',
     examples: [
-      { en: 'Let's wrap up this discussion and move on.', vi: 'Hãy kết thúc cuộc thảo luận này và tiếp tục.' },
-      { en: 'I'm wrapping up my tasks before the holiday.', vi: 'Tôi đang hoàn tất công việc trước kỳ nghỉ.' },
+      { en: "Let's wrap up this discussion and move on.", vi: 'Hãy kết thúc cuộc thảo luận này và tiếp tục.' },
+      { en: "I'm wrapping up my tasks before the holiday.", vi: 'Tôi đang hoàn tất công việc trước kỳ nghỉ.' },
     ],
   },
 
@@ -131,7 +131,7 @@ export const phrases: Phrase[] = [
     id: 't1', phrase: 'push to production', translation: 'Triển khai lên môi trường production',
     type: 'expression', category: 'tech',
     examples: [
-      { en: 'We'll push to production after the code review.', vi: 'Chúng ta sẽ deploy sau khi review code xong.' },
+      { en: "We'll push to production after the code review.", vi: 'Chúng ta sẽ deploy sau khi review code xong.' },
       { en: 'Never push to production on a Friday.', vi: 'Đừng bao giờ deploy vào thứ Sáu.' },
     ],
     notes: 'Cũng hay nói "deploy to prod".',
@@ -141,7 +141,7 @@ export const phrases: Phrase[] = [
     type: 'collocation', category: 'tech',
     examples: [
       { en: 'We had to roll back the change after it caused errors.', vi: 'Chúng ta phải hoàn tác thay đổi sau khi nó gây ra lỗi.' },
-      { en: 'It's important to be able to roll back quickly.', vi: 'Khả năng rollback nhanh là rất quan trọng.' },
+      { en: "It's important to be able to roll back quickly.", vi: 'Khả năng rollback nhanh là rất quan trọng.' },
     ],
   },
   {
@@ -149,7 +149,7 @@ export const phrases: Phrase[] = [
     type: 'collocation', category: 'tech',
     examples: [
       { en: 'Your commit broke the build — please check it.', vi: 'Commit của bạn làm hỏng build — hãy kiểm tra lại.' },
-      { en: 'Don't merge until you're sure it won't break the build.', vi: 'Đừng merge cho đến khi chắc không làm hỏng build.' },
+      { en: "Don't merge until you're sure it won't break the build.", vi: 'Đừng merge cho đến khi chắc không làm hỏng build.' },
     ],
   },
   {
@@ -164,15 +164,15 @@ export const phrases: Phrase[] = [
     id: 't5', phrase: 'review a PR', translation: 'Review pull request',
     type: 'collocation', category: 'tech',
     examples: [
-      { en: 'Can someone review my PR? It's been open for two days.', vi: 'Ai có thể review PR của tôi không? Nó đã mở 2 ngày rồi.' },
-      { en: 'I'll review your PR after standup.', vi: 'Tôi sẽ review PR của bạn sau standup.' },
+      { en: "Can someone review my PR? It's been open for two days.", vi: 'Ai có thể review PR của tôi không? Nó đã mở 2 ngày rồi.' },
+      { en: "I'll review your PR after standup.", vi: 'Tôi sẽ review PR của bạn sau standup.' },
     ],
   },
   {
     id: 't6', phrase: 'ship a feature', translation: 'Ra mắt / hoàn thiện một tính năng',
     type: 'collocation', category: 'tech',
     examples: [
-      { en: 'We're planning to ship this feature next sprint.', vi: 'Chúng ta dự định ra mắt tính năng này vào sprint tới.' },
+      { en: "We're planning to ship this feature next sprint.", vi: 'Chúng ta dự định ra mắt tính năng này vào sprint tới.' },
       { en: 'The goal is to ship fast and iterate.', vi: 'Mục tiêu là ra mắt nhanh rồi cải tiến dần.' },
     ],
   },
@@ -189,7 +189,7 @@ export const phrases: Phrase[] = [
     type: 'expression', category: 'tech',
     examples: [
       { en: 'Can you spin up a new instance for testing?', vi: 'Bạn có thể khởi chạy một instance mới để test không?' },
-      { en: 'We'll spin up a staging environment first.', vi: 'Chúng ta sẽ dựng staging trước.' },
+      { en: "We'll spin up a staging environment first.", vi: 'Chúng ta sẽ dựng staging trước.' },
     ],
   },
   {
@@ -238,8 +238,8 @@ export const phrases: Phrase[] = [
     id: 'm1', phrase: 'circle back', translation: 'Quay lại vấn đề này sau',
     type: 'idiom', category: 'meeting',
     examples: [
-      { en: 'Let's circle back on the pricing discussion next week.', vi: 'Hãy quay lại thảo luận về giá vào tuần sau.' },
-      { en: 'We don't have time now — can we circle back?', vi: 'Giờ không có thời gian — chúng ta có thể quay lại sau không?' },
+      { en: "Let's circle back on the pricing discussion next week.", vi: 'Hãy quay lại thảo luận về giá vào tuần sau.' },
+      { en: "We don't have time now — can we circle back?", vi: 'Giờ không có thời gian — chúng ta có thể quay lại sau không?' },
     ],
     notes: 'Rất phổ biến trong tech meetings.',
   },
@@ -247,7 +247,7 @@ export const phrases: Phrase[] = [
     id: 'm2', phrase: 'touch base', translation: 'Kiểm tra nhanh / cập nhật tiến độ',
     type: 'idiom', category: 'meeting',
     examples: [
-      { en: 'Let's touch base tomorrow morning.', vi: 'Hãy gặp nhau nhanh vào sáng mai.' },
+      { en: "Let's touch base tomorrow morning.", vi: 'Hãy gặp nhau nhanh vào sáng mai.' },
       { en: 'I wanted to touch base with you on the project status.', vi: 'Tôi muốn kiểm tra nhanh về tiến độ dự án với bạn.' },
     ],
   },
@@ -255,7 +255,7 @@ export const phrases: Phrase[] = [
     id: 'm3', phrase: 'take it offline', translation: 'Thảo luận riêng ngoài cuộc họp này',
     type: 'expression', category: 'meeting',
     examples: [
-      { en: 'This is getting detailed — let's take it offline.', vi: 'Vấn đề này khá chi tiết — hãy trao đổi riêng sau nhé.' },
+      { en: "This is getting detailed — let's take it offline.", vi: 'Vấn đề này khá chi tiết — hãy trao đổi riêng sau nhé.' },
       { en: 'Can we take this discussion offline after the meeting?', vi: 'Chúng ta có thể thảo luận riêng sau cuộc họp không?' },
     ],
     notes: 'Dùng khi một chủ đề quá chi tiết, không phù hợp với cả nhóm.',
@@ -280,7 +280,7 @@ export const phrases: Phrase[] = [
     id: 'm6', phrase: 'move the needle', translation: 'Tạo ra sự khác biệt đáng kể / thúc đẩy tiến triển',
     type: 'idiom', category: 'meeting',
     examples: [
-      { en: 'Small fixes won't move the needle — we need a bigger change.', vi: 'Các sửa nhỏ sẽ không tạo ra khác biệt — cần thay đổi lớn hơn.' },
+      { en: "Small fixes won't move the needle — we need a bigger change.", vi: 'Các sửa nhỏ sẽ không tạo ra khác biệt — cần thay đổi lớn hơn.' },
       { en: 'What can we do this quarter to really move the needle?', vi: 'Chúng ta có thể làm gì quý này để thực sự tạo ra sự khác biệt?' },
     ],
   },
@@ -288,15 +288,15 @@ export const phrases: Phrase[] = [
     id: 'm7', phrase: 'get the ball rolling', translation: 'Bắt đầu làm / khởi động',
     type: 'idiom', category: 'meeting',
     examples: [
-      { en: 'Let's get the ball rolling on the new project.', vi: 'Hãy bắt đầu khởi động dự án mới thôi.' },
-      { en: 'Who's going to get the ball rolling on this?', vi: 'Ai sẽ là người khởi động cái này?' },
+      { en: "Let's get the ball rolling on the new project.", vi: 'Hãy bắt đầu khởi động dự án mới thôi.' },
+      { en: "Who's going to get the ball rolling on this?", vi: 'Ai sẽ là người khởi động cái này?' },
     ],
   },
   {
     id: 'm8', phrase: 'on the same page', translation: 'Hiểu nhau / đồng thuận với nhau',
     type: 'idiom', category: 'meeting',
     examples: [
-      { en: 'I want to make sure we're all on the same page.', vi: 'Tôi muốn đảm bảo chúng ta đều hiểu nhau.' },
+      { en: "I want to make sure we're all on the same page.", vi: 'Tôi muốn đảm bảo chúng ta đều hiểu nhau.' },
       { en: 'Are we on the same page about the requirements?', vi: 'Chúng ta có cùng hiểu về yêu cầu không?' },
     ],
   },
@@ -304,7 +304,7 @@ export const phrases: Phrase[] = [
     id: 'm9', phrase: 'table the discussion', translation: 'Tạm hoãn thảo luận / để lại cho lần sau',
     type: 'expression', category: 'meeting',
     examples: [
-      { en: 'We're running low on time — let's table this for next week.', vi: 'Gần hết giờ rồi — hãy để lại chủ đề này cho tuần sau.' },
+      { en: "We're running low on time — let's table this for next week.", vi: 'Gần hết giờ rồi — hãy để lại chủ đề này cho tuần sau.' },
     ],
     notes: 'Cẩn thận: ở Anh "table" có nghĩa là ĐƯA VÀO bàn thảo luận (ngược nghĩa với Mỹ).',
   },
@@ -313,15 +313,15 @@ export const phrases: Phrase[] = [
     type: 'phrasal', category: 'meeting',
     examples: [
       { en: 'Can we sync up briefly before the client call?', vi: 'Chúng ta có thể nói chuyện nhanh trước khi gọi khách hàng không?' },
-      { en: 'Let's sync up tomorrow to align on priorities.', vi: 'Hãy sync nhau vào ngày mai để thống nhất ưu tiên.' },
+      { en: "Let's sync up tomorrow to align on priorities.", vi: 'Hãy sync nhau vào ngày mai để thống nhất ưu tiên.' },
     ],
   },
   {
     id: 'm11', phrase: 'run point on', translation: 'Chịu trách nhiệm chính / dẫn dắt',
     type: 'expression', category: 'meeting',
     examples: [
-      { en: 'Who's running point on the migration project?', vi: 'Ai đang chịu trách nhiệm chính cho dự án migration?' },
-      { en: 'I'll run point on the API integration.', vi: 'Tôi sẽ dẫn dắt phần tích hợp API.' },
+      { en: "Who's running point on the migration project?", vi: 'Ai đang chịu trách nhiệm chính cho dự án migration?' },
+      { en: "I'll run point on the API integration.", vi: 'Tôi sẽ dẫn dắt phần tích hợp API.' },
     ],
   },
 
@@ -330,7 +330,7 @@ export const phrases: Phrase[] = [
     id: 'e1', phrase: 'as per our discussion', translation: 'Như đã thảo luận / theo như chúng ta đã nói',
     type: 'expression', category: 'email',
     examples: [
-      { en: 'As per our discussion, I'm sending over the updated spec.', vi: 'Như đã thảo luận, tôi gửi bản spec đã cập nhật.' },
+      { en: "As per our discussion, I'm sending over the updated spec.", vi: 'Như đã thảo luận, tôi gửi bản spec đã cập nhật.' },
     ],
     notes: 'Formal, thường dùng ở đầu email để nhắc lại cam kết từ cuộc họp.',
   },
@@ -340,7 +340,7 @@ export const phrases: Phrase[] = [
     examples: [
       { en: 'Please find attached the project proposal for your review.', vi: 'Vui lòng xem đề xuất dự án đính kèm.' },
     ],
-    notes: 'Cách nói formal trong email. Phiên bản casual hơn: "I've attached...".',
+    notes: "Cách nói formal trong email. Phiên bản casual hơn: \"I've attached...\".",
   },
   {
     id: 'e3', phrase: 'I wanted to follow up on', translation: 'Tôi muốn theo dõi về / nhắc lại về',
@@ -351,11 +351,11 @@ export const phrases: Phrase[] = [
     ],
   },
   {
-    id: 'e4', phrase: 'I'm reaching out regarding', translation: 'Tôi liên hệ về vấn đề...',
+    id: 'e4', phrase: "I'm reaching out regarding", translation: 'Tôi liên hệ về vấn đề...',
     type: 'expression', category: 'email',
     examples: [
-      { en: 'I'm reaching out regarding the upcoming product launch.', vi: 'Tôi liên hệ về buổi ra mắt sản phẩm sắp tới.' },
-      { en: 'I'm reaching out regarding a potential collaboration.', vi: 'Tôi liên hệ về khả năng hợp tác.' },
+      { en: "I'm reaching out regarding the upcoming product launch.", vi: 'Tôi liên hệ về buổi ra mắt sản phẩm sắp tới.' },
+      { en: "I'm reaching out regarding a potential collaboration.", vi: 'Tôi liên hệ về khả năng hợp tác.' },
     ],
     notes: 'Thường dùng khi gửi email lần đầu cho người chưa quen.',
   },
@@ -375,11 +375,11 @@ export const phrases: Phrase[] = [
     ],
   },
   {
-    id: 'e7', phrase: 'I'll keep you posted', translation: 'Tôi sẽ cập nhật thông tin cho bạn',
+    id: 'e7', phrase: "I'll keep you posted", translation: 'Tôi sẽ cập nhật thông tin cho bạn',
     type: 'expression', category: 'email',
     examples: [
-      { en: 'I'll keep you posted as we make progress.', vi: 'Tôi sẽ cập nhật khi có tiến triển.' },
-      { en: 'Once I hear back from the team, I'll keep you posted.', vi: 'Khi nhận được phản hồi từ team, tôi sẽ thông báo cho bạn.' },
+      { en: "I'll keep you posted as we make progress.", vi: 'Tôi sẽ cập nhật khi có tiến triển.' },
+      { en: "Once I hear back from the team, I'll keep you posted.", vi: 'Khi nhận được phản hồi từ team, tôi sẽ thông báo cho bạn.' },
     ],
   },
   {
@@ -412,7 +412,7 @@ export const phrases: Phrase[] = [
     id: 's1', phrase: 'swamped with work', translation: 'Ngập đầu trong công việc / bận rộn cực kỳ',
     type: 'idiom', category: 'smalltalk',
     examples: [
-      { en: 'Sorry for the late reply — I've been swamped with work.', vi: 'Xin lỗi vì trả lời muộn — dạo này tôi ngập đầu công việc.' },
+      { en: "Sorry for the late reply — I've been swamped with work.", vi: 'Xin lỗi vì trả lời muộn — dạo này tôi ngập đầu công việc.' },
       { en: 'End of quarter is always crazy — everyone is swamped.', vi: 'Cuối quý lúc nào cũng hỗn loạn — ai cũng bận tới tận cổ.' },
     ],
   },
@@ -428,7 +428,7 @@ export const phrases: Phrase[] = [
     id: 's3', phrase: 'under the weather', translation: 'Không được khỏe / hơi mệt',
     type: 'idiom', category: 'smalltalk',
     examples: [
-      { en: 'I'm a bit under the weather today — might sign off early.', vi: 'Hôm nay tôi hơi không khỏe — có thể tôi sẽ off sớm.' },
+      { en: "I'm a bit under the weather today — might sign off early.", vi: 'Hôm nay tôi hơi không khỏe — có thể tôi sẽ off sớm.' },
     ],
   },
   {
@@ -449,7 +449,7 @@ export const phrases: Phrase[] = [
     id: 's6', phrase: 'get the hang of it', translation: 'Nắm bắt được / quen tay',
     type: 'idiom', category: 'smalltalk',
     examples: [
-      { en: 'Kubernetes is confusing at first, but you'll get the hang of it.', vi: 'Kubernetes lúc đầu khó hiểu, nhưng bạn sẽ quen thôi.' },
+      { en: "Kubernetes is confusing at first, but you'll get the hang of it.", vi: 'Kubernetes lúc đầu khó hiểu, nhưng bạn sẽ quen thôi.' },
     ],
   },
   {
@@ -471,7 +471,7 @@ export const phrases: Phrase[] = [
     id: 's9', phrase: 'give it a shot', translation: 'Thử xem / cứ thử đi',
     type: 'expression', category: 'smalltalk',
     examples: [
-      { en: 'I've never used Rust before, but I'll give it a shot.', vi: 'Tôi chưa dùng Rust bao giờ, nhưng tôi sẽ thử xem.' },
+      { en: "I've never used Rust before, but I'll give it a shot.", vi: 'Tôi chưa dùng Rust bao giờ, nhưng tôi sẽ thử xem.' },
     ],
   },
   {
@@ -486,7 +486,7 @@ export const phrases: Phrase[] = [
     id: 's11', phrase: 'fair enough', translation: 'Được thôi / có lý đấy',
     type: 'expression', category: 'smalltalk',
     examples: [
-      { en: 'We should skip the meeting if there's nothing to discuss. — Fair enough.', vi: 'Có thể bỏ qua cuộc họp nếu không có gì để nói. — Được thôi.' },
+      { en: "We should skip the meeting if there's nothing to discuss. — Fair enough.", vi: 'Có thể bỏ qua cuộc họp nếu không có gì để nói. — Được thôi.' },
     ],
   },
 ];

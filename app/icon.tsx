@@ -10,59 +10,34 @@ export default function Icon() {
         width: 192,
         height: 192,
         display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
         background: 'linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)',
         borderRadius: 44,
       }}
     >
-      {/* Speech bubble */}
-      <div
-        style={{
-          position: 'absolute',
-          left: 34,
-          top: 36,
-          width: 88,
-          height: 60,
-          background: 'rgba(255,255,255,0.95)',
-          borderRadius: 18,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'flex-start',
-          justifyContent: 'center',
-          paddingLeft: 14,
-          gap: 8,
-        }}
+      <svg
+        width="192"
+        height="192"
+        viewBox="0 0 192 192"
+        xmlns="http://www.w3.org/2000/svg"
       >
-        <div style={{ width: 44, height: 8, background: 'linear-gradient(90deg,#a78bfa,#818cf8)', borderRadius: 4 }} />
-        <div style={{ width: 30, height: 8, background: 'rgba(167,139,250,0.5)', borderRadius: 4 }} />
-      </div>
-      {/* Bubble tail */}
-      <div
-        style={{
-          position: 'absolute',
-          left: 40,
-          top: 94,
-          width: 0,
-          height: 0,
-          borderLeft: '10px solid transparent',
-          borderRight: '22px solid rgba(255,255,255,0.95)',
-          borderTop: '16px solid rgba(255,255,255,0.95)',
-        }}
-      />
-      {/* Star */}
-      <div
-        style={{
-          position: 'absolute',
-          right: 32,
-          bottom: 34,
-          fontSize: 54,
-          color: 'rgba(255,255,255,0.92)',
-          lineHeight: 1,
-        }}
-      >
-        ✦
-      </div>
+        {/* Speech bubble body */}
+        <rect x="30" y="38" width="100" height="70" rx="18" fill="white" fillOpacity="0.95" />
+        {/* Bubble tail */}
+        <polygon points="44,108 36,132 68,108" fill="white" fillOpacity="0.95" />
+
+        {/* Lines inside bubble */}
+        <rect x="48" y="60" width="52" height="10" rx="5" fill="#7c3aed" />
+        <rect x="48" y="78" width="36" height="10" rx="5" fill="#7c3aed" fillOpacity="0.45" />
+
+        {/* Sparkle star — bottom right */}
+        <g transform="translate(122, 110)">
+          <path
+            d="M18 0 L22 14 L36 18 L22 22 L18 36 L14 22 L0 18 L14 14 Z"
+            fill="white"
+            fillOpacity="0.92"
+          />
+        </g>
+      </svg>
     </div>,
     { ...size }
   )

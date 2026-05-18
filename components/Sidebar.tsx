@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useProgress } from '@/hooks/useProgress';
 import { useDailyChallenge } from '@/hooks/useDailyChallenge';
+import Logo from './Logo';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -66,15 +67,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     <div className="flex flex-col h-full">
       {/* Logo */}
       <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.05]">
-        <Link href="/app" className="flex items-center gap-3" onClick={onClose}>
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center font-black text-sm shadow-lg shadow-violet-500/20">
-            EN
-          </div>
-          <div>
-            <p className="font-extrabold text-sm text-white leading-none">EnglishUp</p>
-            <p className="text-white/25 text-[11px] mt-0.5">for developers</p>
-          </div>
-        </Link>
+        <Logo href="/app" size="sm" onClick={onClose} />
         <button onClick={onClose} className="lg:hidden text-white/30 hover:text-white/60 p-1 rounded-lg transition-colors">
           <X className="w-4 h-4" />
         </button>

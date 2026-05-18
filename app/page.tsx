@@ -9,6 +9,7 @@ import {
   ChevronDown, Star, Trophy, Target,
   Play, Sparkles, Globe, Code2, Bot, X,
 } from 'lucide-react';
+import Logo from '@/components/Logo';
 
 /* ─── constants ─── */
 
@@ -257,15 +258,7 @@ export default function LandingPage() {
         className="fixed top-0 left-0 right-0 z-50 border-b border-white/[0.06] backdrop-blur-xl bg-[#080812]/80"
       >
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center font-black text-sm">
-              EN
-            </div>
-            <div>
-              <p className="font-extrabold text-base leading-none tracking-tight">EnglishUp</p>
-              <p className="text-white/30 text-xs">for developers</p>
-            </div>
-          </div>
+          <Logo href="/" size="md" />
 
           <nav className="hidden md:flex items-center gap-6">
             {['Features', 'How it works', 'Curriculum', 'Pricing'].map((item) => (
@@ -743,15 +736,7 @@ export default function LandingPage() {
       <footer className="border-t border-white/[0.06] py-12">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center font-black text-sm">
-                EN
-              </div>
-              <div>
-                <p className="font-extrabold text-sm leading-none">EnglishUp</p>
-                <p className="text-white/25 text-xs mt-0.5">for developers</p>
-              </div>
-            </div>
+            <Logo href="/" size="sm" />
 
             <div className="flex items-center gap-6 text-white/30 text-sm">
               <a href="#features" className="hover:text-white/60 transition-colors">Features</a>
@@ -799,7 +784,15 @@ function MockAppCard() {
         {/* Mini header */}
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center text-[10px] font-black">EN</div>
+            <svg width="22" height="22" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="44" height="44" rx="12" fill="url(#mlg1)"/>
+              <defs><linearGradient id="mlg1" x1="0" y1="0" x2="44" y2="44" gradientUnits="userSpaceOnUse"><stop stopColor="#7c3aed"/><stop offset="1" stopColor="#4f46e5"/></linearGradient></defs>
+              <rect x="8" y="9" width="20" height="14" rx="4" fill="white" fillOpacity="0.95"/>
+              <path d="M12 23 L10 27 L16 23" fill="white" fillOpacity="0.95"/>
+              <rect x="11" y="13" width="10" height="2" rx="1" fill="#a78bfa"/>
+              <rect x="11" y="17" width="7" height="2" rx="1" fill="#a78bfa" fillOpacity="0.6"/>
+              <text x="30" y="37" fontSize="13" fill="white" fillOpacity="0.9" fontFamily="serif">✦</text>
+            </svg>
             <span className="text-xs font-bold">EnglishUp</span>
           </div>
           <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-amber-500/15 border border-amber-500/20">

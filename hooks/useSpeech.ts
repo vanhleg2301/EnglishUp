@@ -130,3 +130,51 @@ export function useSpeechRecognition() {
 
   return { startListening, stopListening };
 }
+
+export function useLiveSpeechRecognition() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const recognitionRef = useRef<any>(null);
+
+  const startListening = useCallback(
+    (
+      onInterim: (transcript: string) => void,
+      onFinal: (transcript: string) => void,
+      onEnd?: () => void
+    ) => {
+      if (typeof window === 'undefined') return;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      if (!SR) {
+        alert('Trình duyệt không hỗ trợ nhận dạng giọng nói. Hãy dùng Chrome.');
+        return;
+      }
+      const rec = new SR();
+      rec.lang = 'en-US';
+      rec.interimResults = true;
+      rec.maxAlternatives = 3;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      rec.onresult = (e: any) => {
+        let interim = '';
+        let finalText = '';
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+          const t = e.results[i][0].transcript;
+          if (e.results[i].isFinal) finalText += t;
+          else interim += t;
+        }
+        if (interim) onInterim(interim);
+        if (finalText) onFinal(finalText.toLowerCase().trim());
+      };
+      rec.onend = () => onEnd?.();
+      rec.onerror = () => onEnd?.();
+      recognitionRef.current = rec;
+      rec.start();
+    },
+    []
+  );
+
+  const stopListening = useCallback(() => {
+    recognitionRef.current?.stop();
+  }, []);
+
+  return { startListening, stopListening };
+}

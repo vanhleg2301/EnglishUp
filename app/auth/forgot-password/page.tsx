@@ -3,18 +3,54 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, ArrowLeft, ArrowRight, Loader2, CheckCircle2 } from 'lucide-react';
+import { Mail, ArrowLeft, ArrowRight, Loader2, CheckCircle2, Copy, Check } from 'lucide-react';
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
+  const [resetCode, setResetCode] = useState('');
+  const [copied, setCopied] = useState(false);
+  const [error, setError] = useState('');
+  const [touched, setTouched] = useState(false);
+
+  function validateEmail(value: string): string {
+    if (!value) return 'Email is required.';
+    if (!EMAIL_RE.test(value)) return 'Enter a valid email address.';
+    return '';
+  }
+
+  function handleChange(value: string) {
+    setEmail(value);
+    if (touched) setError(validateEmail(value));
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setTouched(true);
+    const err = validateEmail(email);
+    setError(err);
+    if (err) return;
+
     setLoading(true);
-    await new Promise(r => setTimeout(r, 1000));
-    setSent(true);
+    try {
+      const res = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setResetCode(json.data?.resetCode ?? '');
+        setSent(true);
+      } else {
+        setError(json.error ?? 'Something went wrong.');
+      }
+    } catch {
+      setError('Network error. Please try again.');
+    }
     setLoading(false);
   }
 
@@ -44,7 +80,7 @@ export default function ForgotPasswordPage() {
               Enter your email and we'll send you a reset link.
             </p>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} noValidate className="space-y-4">
               <div>
                 <label className="block text-[11px] font-bold text-white/30 uppercase tracking-wider mb-2">
                   Email
@@ -54,12 +90,28 @@ export default function ForgotPasswordPage() {
                   <input
                     type="email"
                     value={email}
-                    onChange={e => setEmail(e.target.value)}
+                    onChange={e => handleChange(e.target.value)}
+                    onBlur={() => {
+                      setTouched(true);
+                      setError(validateEmail(email));
+                    }}
                     placeholder="you@example.com"
-                    required
-                    className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white text-sm placeholder:text-white/15 focus:outline-none focus:border-violet-500/40 focus:bg-white/[0.06] transition-all"
+                    className={`w-full pl-10 pr-4 py-3 rounded-xl bg-white/[0.04] border text-white text-sm placeholder:text-white/15 focus:outline-none focus:bg-white/[0.06] transition-all ${
+                      touched && error
+                        ? 'border-red-500/50 focus:border-red-500/60'
+                        : 'border-white/[0.08] focus:border-violet-500/40'
+                    }`}
                   />
                 </div>
+                {touched && error && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-red-400 text-xs mt-1.5 ml-1"
+                  >
+                    {error}
+                  </motion.p>
+                )}
               </div>
 
               <motion.button
@@ -87,14 +139,35 @@ export default function ForgotPasswordPage() {
             <div className="w-14 h-14 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center mx-auto mb-4">
               <CheckCircle2 className="w-7 h-7 text-emerald-400" />
             </div>
-            <h2 className="text-xl font-black text-white mb-2">Check your inbox</h2>
-            <p className="text-white/35 text-sm mb-1">
-              We sent a reset link to{' '}
-              <span className="text-white/60 font-semibold">{email}</span>.
+            <h2 className="text-xl font-black text-white mb-2">Reset code generated</h2>
+            <p className="text-white/35 text-sm mb-5">
+              Use this code on the reset password page.
             </p>
-            <p className="text-white/20 text-xs mt-4">
-              Didn't receive it? Check spam or try again.
-            </p>
+            {resetCode && (
+              <div className="mb-5">
+                <div className="flex items-center justify-center gap-3 p-4 rounded-2xl bg-white/[0.04] border border-white/[0.10]">
+                  <span className="font-mono text-3xl font-black text-white tracking-[0.25em]">
+                    {resetCode}
+                  </span>
+                  <button
+                    onClick={async () => {
+                      await navigator.clipboard.writeText(resetCode);
+                      setCopied(true);
+                      setTimeout(() => setCopied(false), 2000);
+                    }}
+                    className="p-2 rounded-lg hover:bg-white/[0.07] transition-colors text-white/40 hover:text-white/70"
+                  >
+                    {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+            )}
+            <Link href="/auth/reset-password">
+              <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold text-sm hover:from-violet-500 hover:to-indigo-500 transition-all">
+                Go to reset password
+                <ArrowRight className="w-3.5 h-3.5" />
+              </div>
+            </Link>
           </motion.div>
         )}
       </AnimatePresence>

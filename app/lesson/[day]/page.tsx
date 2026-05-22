@@ -16,6 +16,8 @@ import ListenChoose from '@/components/exercises/ListenChoose';
 import WordMatch from '@/components/exercises/WordMatch';
 import Speaking from '@/components/exercises/Speaking';
 import PronunciationCheck from '@/components/exercises/PronunciationCheck';
+import PremiumGate from '@/components/PremiumGate';
+import { useAuth } from '@/contexts/AuthContext';
 import type { Exercise } from '@/types';
 
 type Phase = 'vocab' | 'exercise' | 'complete' | 'gameover';
@@ -27,6 +29,7 @@ export default function LessonPage() {
   const lesson = getLessonByDay(day);
   const { saveDay, isDayUnlocked } = useProgress();
   const { speak } = useTTS();
+  const { user } = useAuth();
 
   const [phase, setPhase] = useState<Phase>('vocab');
   const [exerciseIndex, setExerciseIndex] = useState(0);
@@ -108,6 +111,11 @@ export default function LessonPage() {
     setFeedbackHint(null);
     setFeedbackQuestion(null);
   };
+
+  const isPremium = user?.role === 'admin' || user?.subscription?.status === 'active';
+  if (day > 1 && !isPremium) {
+    return <PremiumGate mode="fullscreen" featureName={`Day ${day} Lesson`} />;
+  }
 
   return (
     <div

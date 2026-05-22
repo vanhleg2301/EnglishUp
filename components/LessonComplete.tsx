@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Trophy, Star, Zap, Home, RotateCcw, ChevronRight } from 'lucide-react';
+import { Trophy, Star, Zap, Home, RotateCcw, ChevronRight, Award } from 'lucide-react';
 import Link from 'next/link';
+import CertificateCanvas from './CertificateCanvas';
 
 interface Props {
   day: number;
@@ -42,6 +43,7 @@ function Confetti() {
 
 export default function LessonComplete({ day, correctCount, totalExercises, xpEarned, onRestart }: Props) {
   const [showConfetti, setShowConfetti] = useState(true);
+  const [showCert, setShowCert] = useState(false);
   const score = Math.round((correctCount / totalExercises) * 100);
   const stars = score >= 90 ? 3 : score >= 60 ? 2 : 1;
   const title = score >= 90 ? 'Xuất sắc!' : score >= 60 ? 'Khá tốt!' : 'Cố gắng hơn nhé!';
@@ -55,6 +57,14 @@ export default function LessonComplete({ day, correctCount, totalExercises, xpEa
   return (
     <>
       {showConfetti && <Confetti />}
+      {showCert && (
+        <CertificateCanvas
+          courseName="30-Day English Learning Path"
+          completedDate={new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+          xpEarned={xpEarned}
+          onClose={() => setShowCert(false)}
+        />
+      )}
       <motion.div
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
@@ -122,6 +132,20 @@ export default function LessonComplete({ day, correctCount, totalExercises, xpEa
           <Zap className="w-5 h-5 text-amber-400 fill-amber-400" />
           <span className="text-amber-300 font-bold">+{xpEarned} XP earned</span>
         </motion.div>
+
+        {/* Certificate for day 30 */}
+        {day === 30 && (
+          <motion.button
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.2 }}
+            onClick={() => setShowCert(true)}
+            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/40 text-amber-300 font-bold hover:from-amber-500/30 hover:to-orange-500/30 transition-all"
+          >
+            <Award className="w-5 h-5" />
+            Get Your Certificate
+          </motion.button>
+        )}
 
         {/* Buttons */}
         <div className="flex gap-3 pt-2">

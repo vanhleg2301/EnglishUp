@@ -6,6 +6,42 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Loader2, CheckCircle2 } from 'lucide-react';
 
+interface FieldErrors {
+  name: string;
+  email: string;
+  password: string;
+  confirmPw: string;
+}
+
+interface TouchedFields {
+  name: boolean;
+  email: boolean;
+  password: boolean;
+  confirmPw: boolean;
+}
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function getPasswordStrength(pw: string): { level: 0 | 1 | 2 | 3; label: string; color: string } {
+  if (pw.length === 0) return { level: 0, label: '', color: '' };
+  let score = 0;
+  if (pw.length >= 8) score++;
+  if (/[A-Z]/.test(pw) || /[0-9]/.test(pw)) score++;
+  if (/[^A-Za-z0-9]/.test(pw) || pw.length >= 12) score++;
+  if (score === 1) return { level: 1, label: 'Weak', color: 'bg-red-500' };
+  if (score === 2) return { level: 2, label: 'Fair', color: 'bg-amber-400' };
+  return { level: 3, label: 'Strong', color: 'bg-emerald-400' };
+}
+
+function validate(fields: { name: string; email: string; password: string; confirmPw: string }): FieldErrors {
+  return {
+    name: fields.name.trim().length < 2 ? 'Name must be at least 2 characters.' : '',
+    email: !fields.email ? 'Email is required.' : !EMAIL_RE.test(fields.email) ? 'Enter a valid email address.' : '',
+    password: fields.password.length < 8 ? 'Password must be at least 8 characters.' : '',
+    confirmPw: fields.confirmPw !== fields.password ? 'Passwords do not match.' : '',
+  };
+}
+
 export default function SignupPage() {
   const router = useRouter();
   const [name, setName] = useState('');
@@ -14,26 +50,68 @@ export default function SignupPage() {
   const [confirmPw, setConfirmPw] = useState('');
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [errors, setErrors] = useState<FieldErrors>({ name: '', email: '', password: '', confirmPw: '' });
+  const [touched, setTouched] = useState<TouchedFields>({ name: false, email: false, password: false, confirmPw: false });
+
+  const strength = getPasswordStrength(password);
+
+  function handleBlur(field: keyof FieldErrors) {
+    setTouched(t => ({ ...t, [field]: true }));
+    const current = { name, email, password, confirmPw };
+    setErrors(e => ({ ...e, [field]: validate(current)[field] }));
+  }
+
+  function handleChange(field: keyof FieldErrors, value: string) {
+    const updates = { name, email, password, confirmPw, [field]: value };
+    if (field === 'name') setName(value);
+    if (field === 'email') setEmail(value);
+    if (field === 'password') setPassword(value);
+    if (field === 'confirmPw') setConfirmPw(value);
+    if (touched[field]) setErrors(e => ({ ...e, [field]: validate(updates)[field] }));
+    if (field === 'password' && touched.confirmPw) {
+      setErrors(e => ({ ...e, confirmPw: value !== confirmPw ? 'Passwords do not match.' : '' }));
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError('');
-    if (password !== confirmPw) {
-      setError('Passwords do not match.');
-      return;
-    }
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters.');
-      return;
-    }
+    const current = { name, email, password, confirmPw };
+    const errs = validate(current);
+    setTouched({ name: true, email: true, password: true, confirmPw: true });
+    setErrors(errs);
+    if (Object.values(errs).some(Boolean)) return;
+
     setLoading(true);
-    await new Promise(r => setTimeout(r, 1000));
-    setSuccess(true);
-    await new Promise(r => setTimeout(r, 1200));
-    router.push('/app');
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setSuccess(true);
+        await new Promise(r => setTimeout(r, 1200));
+        router.push('/app');
+      } else {
+        setLoading(false);
+        setErrors(prev => ({ ...prev, email: json.error ?? 'Registration failed.' }));
+        setTouched(prev => ({ ...prev, email: true }));
+      }
+    } catch {
+      setLoading(false);
+      setErrors(prev => ({ ...prev, email: 'Network error. Please try again.' }));
+      setTouched(prev => ({ ...prev, email: true }));
+    }
   }
+
+  const fieldClass = (field: keyof FieldErrors) =>
+    `w-full pl-10 pr-4 py-3 rounded-xl bg-white/[0.04] border text-white text-sm placeholder:text-white/15 focus:outline-none focus:bg-white/[0.06] transition-all ${
+      touched[field] && errors[field]
+        ? 'border-red-500/50 focus:border-red-500/60'
+        : 'border-white/[0.08] focus:border-violet-500/40'
+    }`;
 
   if (success) {
     return (
@@ -67,7 +145,8 @@ export default function SignupPage() {
         <h1 className="text-2xl font-black text-white mb-1">Start for free</h1>
         <p className="text-white/35 text-sm mb-7">No credit card required. 7 days on us.</p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} noValidate className="space-y-4">
+          {/* Full Name */}
           <div>
             <label className="block text-[11px] font-bold text-white/30 uppercase tracking-wider mb-2">
               Full Name
@@ -77,14 +156,20 @@ export default function SignupPage() {
               <input
                 type="text"
                 value={name}
-                onChange={e => setName(e.target.value)}
+                onChange={e => handleChange('name', e.target.value)}
+                onBlur={() => handleBlur('name')}
                 placeholder="Nguyen Van A"
-                required
-                className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white text-sm placeholder:text-white/15 focus:outline-none focus:border-violet-500/40 focus:bg-white/[0.06] transition-all"
+                className={fieldClass('name')}
               />
             </div>
+            {touched.name && errors.name && (
+              <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} className="text-red-400 text-xs mt-1.5 ml-1">
+                {errors.name}
+              </motion.p>
+            )}
           </div>
 
+          {/* Email */}
           <div>
             <label className="block text-[11px] font-bold text-white/30 uppercase tracking-wider mb-2">
               Email
@@ -94,14 +179,20 @@ export default function SignupPage() {
               <input
                 type="email"
                 value={email}
-                onChange={e => setEmail(e.target.value)}
+                onChange={e => handleChange('email', e.target.value)}
+                onBlur={() => handleBlur('email')}
                 placeholder="you@example.com"
-                required
-                className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white text-sm placeholder:text-white/15 focus:outline-none focus:border-violet-500/40 focus:bg-white/[0.06] transition-all"
+                className={fieldClass('email')}
               />
             </div>
+            {touched.email && errors.email && (
+              <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} className="text-red-400 text-xs mt-1.5 ml-1">
+                {errors.email}
+              </motion.p>
+            )}
           </div>
 
+          {/* Password */}
           <div>
             <label className="block text-[11px] font-bold text-white/30 uppercase tracking-wider mb-2">
               Password
@@ -111,10 +202,10 @@ export default function SignupPage() {
               <input
                 type={showPw ? 'text' : 'password'}
                 value={password}
-                onChange={e => setPassword(e.target.value)}
+                onChange={e => handleChange('password', e.target.value)}
+                onBlur={() => handleBlur('password')}
                 placeholder="Min. 8 characters"
-                required
-                className="w-full pl-10 pr-11 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white text-sm placeholder:text-white/15 focus:outline-none focus:border-violet-500/40 focus:bg-white/[0.06] transition-all"
+                className={`${fieldClass('password')} pr-11`}
               />
               <button
                 type="button"
@@ -124,8 +215,33 @@ export default function SignupPage() {
                 {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
+            {password && (
+              <div className="mt-2 space-y-1">
+                <div className="flex gap-1">
+                  {[1, 2, 3].map(i => (
+                    <div
+                      key={i}
+                      className={`h-1 flex-1 rounded-full transition-all duration-300 ${
+                        strength.level >= i ? strength.color : 'bg-white/[0.08]'
+                      }`}
+                    />
+                  ))}
+                </div>
+                {strength.label && (
+                  <p className={`text-xs ${strength.level === 1 ? 'text-red-400' : strength.level === 2 ? 'text-amber-400' : 'text-emerald-400'}`}>
+                    {strength.label}
+                  </p>
+                )}
+              </div>
+            )}
+            {touched.password && errors.password && (
+              <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} className="text-red-400 text-xs mt-1.5 ml-1">
+                {errors.password}
+              </motion.p>
+            )}
           </div>
 
+          {/* Confirm Password */}
           <div>
             <label className="block text-[11px] font-bold text-white/30 uppercase tracking-wider mb-2">
               Confirm Password
@@ -135,27 +251,18 @@ export default function SignupPage() {
               <input
                 type={showPw ? 'text' : 'password'}
                 value={confirmPw}
-                onChange={e => setConfirmPw(e.target.value)}
+                onChange={e => handleChange('confirmPw', e.target.value)}
+                onBlur={() => handleBlur('confirmPw')}
                 placeholder="••••••••"
-                required
-                className={`w-full pl-10 pr-4 py-3 rounded-xl bg-white/[0.04] border text-white text-sm placeholder:text-white/15 focus:outline-none focus:bg-white/[0.06] transition-all ${
-                  confirmPw && confirmPw !== password
-                    ? 'border-red-500/40 focus:border-red-500/50'
-                    : 'border-white/[0.08] focus:border-violet-500/40'
-                }`}
+                className={fieldClass('confirmPw')}
               />
             </div>
+            {touched.confirmPw && errors.confirmPw && (
+              <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} className="text-red-400 text-xs mt-1.5 ml-1">
+                {errors.confirmPw}
+              </motion.p>
+            )}
           </div>
-
-          {error && (
-            <motion.div
-              initial={{ opacity: 0, y: -4 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="px-3 py-2.5 rounded-xl bg-red-500/10 border border-red-500/20"
-            >
-              <p className="text-red-400 text-xs">{error}</p>
-            </motion.div>
-          )}
 
           <motion.button
             whileHover={{ scale: 1.01 }}
@@ -174,6 +281,28 @@ export default function SignupPage() {
           <p className="text-center text-[11px] text-white/15">
             By signing up you agree to our Terms of Service.
           </p>
+
+          <div className="flex items-center gap-3">
+            <div className="flex-1 h-px bg-white/[0.06]" />
+            <span className="text-white/15 text-xs">or</span>
+            <div className="flex-1 h-px bg-white/[0.06]" />
+          </div>
+
+          <motion.button
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.98 }}
+            type="button"
+            onClick={() => { window.location.href = '/api/auth/google'; }}
+            className="w-full flex items-center justify-center gap-2.5 py-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.07] border border-white/[0.08] text-white/60 font-semibold text-sm transition-all"
+          >
+            <svg className="w-4 h-4" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+            </svg>
+            Continue with Google
+          </motion.button>
         </form>
       </div>
 

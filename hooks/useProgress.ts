@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import type { UserProgress, DayProgress } from '@/types';
 
 const DEFAULT_PROGRESS: UserProgress = {
@@ -12,25 +12,33 @@ const DEFAULT_PROGRESS: UserProgress = {
 export function useProgress() {
   const [progress, setProgress] = useState<UserProgress>(DEFAULT_PROGRESS);
   const [loading, setLoading] = useState(true);
+  const mounted = useRef(true);
+
+  useEffect(() => {
+    mounted.current = true;
+    return () => { mounted.current = false; };
+  }, []);
 
   const fetchProgress = useCallback(async () => {
     try {
       const res = await fetch('/api/progress');
       if (res.ok) {
         const data = await res.json();
-        setProgress(data);
+        if (mounted.current) setProgress(data);
+      } else {
+        if (mounted.current) setProgress(DEFAULT_PROGRESS);
       }
     } catch {
       const saved = localStorage.getItem('eng-progress');
-      if (saved) setProgress(JSON.parse(saved));
+      if (saved && mounted.current) setProgress(JSON.parse(saved));
     } finally {
-      setLoading(false);
+      if (mounted.current) setLoading(false);
     }
   }, []);
 
   useEffect(() => {
     fetchProgress();
-  }, [fetchProgress]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const saveDay = useCallback(async (day: number, score: number, xpEarned: number) => {
     try {
@@ -41,23 +49,42 @@ export function useProgress() {
       });
       if (res.ok) {
         const data = await res.json();
-        setProgress(data);
+        if (mounted.current) setProgress(data);
         return;
       }
     } catch {
       // fallback localStorage
     }
-    const updated: UserProgress = {
-      ...progress,
-      totalXP: progress.totalXP + xpEarned,
-      completedDays: [
-        ...progress.completedDays.filter((d) => d.day !== day),
-        { day, completed: true, score, xpEarned, completedAt: new Date().toISOString() },
-      ],
-    };
-    localStorage.setItem('eng-progress', JSON.stringify(updated));
-    setProgress(updated);
-  }, [progress]);
+    setProgress(prev => {
+      const updated: UserProgress = {
+        ...prev,
+        totalXP: prev.totalXP + xpEarned,
+        completedDays: [
+          ...prev.completedDays.filter((d) => d.day !== day),
+          { day, completed: true, score, xpEarned, completedAt: new Date().toISOString() },
+        ],
+      };
+      localStorage.setItem('eng-progress', JSON.stringify(updated));
+      return updated;
+    });
+  }, []);
+
+  const resetProgress = useCallback(async (): Promise<boolean> => {
+    try {
+      const res = await fetch('/api/progress', { method: 'DELETE' });
+      if (res.ok) {
+        const data = await res.json();
+        if (mounted.current) setProgress(data);
+        try { localStorage.removeItem('eng-progress'); } catch {}
+        return true;
+      }
+    } catch {
+      // ignore
+    }
+    try { localStorage.removeItem('eng-progress'); } catch {}
+    if (mounted.current) setProgress(DEFAULT_PROGRESS);
+    return false;
+  }, []);
 
   const isDayCompleted = useCallback(
     (day: number) => progress.completedDays.some((d: DayProgress) => d.day === day && d.completed),
@@ -75,12 +102,12 @@ export function useProgress() {
   );
 
   const addXP = useCallback((amount: number) => {
-    const updated = { ...progress, totalXP: progress.totalXP + amount };
-    try {
-      localStorage.setItem('eng-progress', JSON.stringify(updated));
-    } catch {}
-    setProgress(updated);
-  }, [progress]);
+    setProgress(prev => {
+      const updated = { ...prev, totalXP: prev.totalXP + amount };
+      try { localStorage.setItem('eng-progress', JSON.stringify(updated)); } catch {}
+      return updated;
+    });
+  }, []);
 
-  return { progress, loading, saveDay, addXP, isDayCompleted, isDayUnlocked, getDayScore, refetch: fetchProgress };
+  return { progress, loading, saveDay, addXP, resetProgress, isDayCompleted, isDayUnlocked, getDayScore, refetch: fetchProgress };
 }

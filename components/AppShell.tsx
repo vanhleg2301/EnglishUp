@@ -1,9 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { Menu } from 'lucide-react';
+import { Menu, Shield } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import Sidebar from './Sidebar';
+import { useAuth } from '@/contexts/AuthContext';
+import Link from 'next/link';
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -17,11 +19,15 @@ const PAGE_LABELS: Record<string, string> = {
   '/conversation': 'Conversations',
   '/alphabet': 'IPA Phonetics',
   '/ai-chat': 'AI Chat',
+  '/profile': 'Profile',
+  '/pricing': 'Pricing',
 };
 
 export default function AppShell({ children }: AppShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
+  const { user } = useAuth();
+
   const pageLabel =
     Object.entries(PAGE_LABELS).find(([path]) =>
       pathname === path || (path !== '/app' && pathname.startsWith(path))
@@ -41,6 +47,11 @@ export default function AppShell({ children }: AppShellProps) {
             <Menu className="w-5 h-5" />
           </button>
           <span className="font-bold text-sm text-white/80 flex-1 min-w-0 truncate">{pageLabel}</span>
+          {user?.role === 'admin' && (
+            <Link href="/admin" className="p-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20">
+              <Shield className="w-4 h-4 text-amber-400" />
+            </Link>
+          )}
         </div>
 
         <main className="flex-1">

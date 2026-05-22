@@ -7,7 +7,7 @@ import {
   Mic, MicOff, ChevronLeft, Lightbulb,
   Target, TrendingUp, ZoomIn,
 } from 'lucide-react';
-import { useTTS, useSpeechRecognition, scorePronunciation } from '@/hooks/useSpeech';
+import { useTTS, useLiveSpeechRecognition, scorePronunciation } from '@/hooks/useSpeech';
 import { useBadges } from '@/hooks/useBadges';
 import { getWordGuide } from '@/lib/pronunciationGuide';
 import WordPopup from '@/components/shadowing/WordPopup';
@@ -93,7 +93,8 @@ export default function ShadowingPlayer({ item, onBack }: Props) {
 
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const { speak, stop } = useTTS();
-  const { startListening, stopListening } = useSpeechRecognition();
+  const { startListening, stopListening } = useLiveSpeechRecognition();
+  const [liveTranscript, setLiveTranscript] = useState('');
   const { trackShadowingScore, trackB2Complete } = useBadges();
   const colors = levelColors[item.level];
 
@@ -192,8 +193,11 @@ export default function ShadowingPlayer({ item, onBack }: Props) {
     const dur = (wordCount * 0.5 / SPEEDS[speedIdx]) * 1000 + 1500;
     setTimeout(() => {
       setPlayState('shadowing');
+      setLiveTranscript('');
       startListening(
+        (interim) => setLiveTranscript(interim),
         (transcript) => {
+          setLiveTranscript('');
           setShadowHeard(transcript);
           const scored = scorePronunciation(item.text, transcript);
           setShadowResult(scored);
@@ -304,6 +308,23 @@ export default function ShadowingPlayer({ item, onBack }: Props) {
 
           <p className="text-white/30 text-sm mt-5 italic border-t border-white/5 pt-4">{item.translation}</p>
         </div>
+
+        {/* Live transcript display */}
+        <AnimatePresence>
+          {playState === 'shadowing' && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="rounded-2xl border border-white/[0.08] bg-white/[0.02] px-5 py-4"
+            >
+              <p className="text-[10px] text-white/30 uppercase tracking-widest font-bold mb-2">Live transcript</p>
+              <p className="text-white/70 text-base min-h-[1.5rem]">
+                {liveTranscript || <span className="text-white/20 italic">Listening…</span>}
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Tip */}
         {item.tip && (

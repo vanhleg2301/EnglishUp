@@ -4,6 +4,8 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { ArrowLeft, Send, Bot, RotateCcw, Sparkles } from 'lucide-react';
+import PremiumGate from '@/components/PremiumGate';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface Message {
   id: string;
@@ -51,6 +53,7 @@ function formatContent(content: string) {
 }
 
 export default function AIChatPage() {
+  const { user } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
@@ -145,6 +148,11 @@ export default function AIChatPage() {
   };
 
   const isEmpty = messages.length === 0;
+
+  const isPremium = user?.role === 'admin' || user?.subscription?.status === 'active';
+  if (!isPremium) {
+    return <PremiumGate mode="fullscreen" featureName="AI Conversation" />;
+  }
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white flex flex-col">

@@ -6,26 +6,92 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Mail, Lock, Eye, EyeOff, ArrowRight, Loader2 } from 'lucide-react';
 
+interface FieldErrors {
+  email: string;
+  password: string;
+}
+
+interface TouchedFields {
+  email: boolean;
+  password: boolean;
+}
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function validateEmail(email: string): string {
+  if (!email) return 'Email is required.';
+  if (!EMAIL_RE.test(email)) return 'Enter a valid email address.';
+  return '';
+}
+
+function validatePassword(password: string): string {
+  if (!password) return 'Password is required.';
+  if (password.length < 6) return 'Password must be at least 6 characters.';
+  return '';
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [serverError, setServerError] = useState('');
+  const [errors, setErrors] = useState<FieldErrors>({ email: '', password: '' });
+  const [touched, setTouched] = useState<TouchedFields>({ email: false, password: false });
+
+  function handleBlur(field: keyof FieldErrors) {
+    setTouched(t => ({ ...t, [field]: true }));
+    if (field === 'email') setErrors(e => ({ ...e, email: validateEmail(email) }));
+    if (field === 'password') setErrors(e => ({ ...e, password: validatePassword(password) }));
+  }
+
+  function handleChange(field: keyof FieldErrors, value: string) {
+    if (field === 'email') {
+      setEmail(value);
+      if (touched.email) setErrors(e => ({ ...e, email: validateEmail(value) }));
+    } else {
+      setPassword(value);
+      if (touched.password) setErrors(e => ({ ...e, password: validatePassword(value) }));
+    }
+    setServerError('');
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError('');
+    const emailErr = validateEmail(email);
+    const passwordErr = validatePassword(password);
+    setTouched({ email: true, password: true });
+    setErrors({ email: emailErr, password: passwordErr });
+    if (emailErr || passwordErr) return;
+
+    setServerError('');
     setLoading(true);
-    await new Promise(r => setTimeout(r, 900));
-    if (email === 'demo@englishup.dev' && password === 'demo123') {
-      router.push('/app');
-    } else {
-      setError('Sai thông tin. Dùng demo@englishup.dev / demo123 để thử.');
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        router.push('/app');
+      } else {
+        setServerError(json.error ?? 'Incorrect email or password.');
+        setLoading(false);
+      }
+    } catch {
+      setServerError('Network error. Please try again.');
       setLoading(false);
     }
   }
+
+  const fieldClass = (field: keyof FieldErrors) =>
+    `w-full pl-10 pr-4 py-3 rounded-xl bg-white/[0.04] border text-white text-sm placeholder:text-white/15 focus:outline-none focus:bg-white/[0.06] transition-all ${
+      touched[field] && errors[field]
+        ? 'border-red-500/50 focus:border-red-500/60'
+        : 'border-white/[0.08] focus:border-violet-500/40'
+    }`;
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
@@ -43,7 +109,7 @@ export default function LoginPage() {
         <h1 className="text-2xl font-black text-white mb-1">Welcome back</h1>
         <p className="text-white/35 text-sm mb-7">Continue your learning journey.</p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} noValidate className="space-y-4">
           <div>
             <label className="block text-[11px] font-bold text-white/30 uppercase tracking-wider mb-2">
               Email
@@ -53,12 +119,21 @@ export default function LoginPage() {
               <input
                 type="email"
                 value={email}
-                onChange={e => setEmail(e.target.value)}
+                onChange={e => handleChange('email', e.target.value)}
+                onBlur={() => handleBlur('email')}
                 placeholder="you@example.com"
-                required
-                className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white text-sm placeholder:text-white/15 focus:outline-none focus:border-violet-500/40 focus:bg-white/[0.06] transition-all"
+                className={`${fieldClass('email')} pr-4`}
               />
             </div>
+            {touched.email && errors.email && (
+              <motion.p
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-red-400 text-xs mt-1.5 ml-1"
+              >
+                {errors.email}
+              </motion.p>
+            )}
           </div>
 
           <div>
@@ -78,10 +153,10 @@ export default function LoginPage() {
               <input
                 type={showPw ? 'text' : 'password'}
                 value={password}
-                onChange={e => setPassword(e.target.value)}
+                onChange={e => handleChange('password', e.target.value)}
+                onBlur={() => handleBlur('password')}
                 placeholder="••••••••"
-                required
-                className="w-full pl-10 pr-11 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white text-sm placeholder:text-white/15 focus:outline-none focus:border-violet-500/40 focus:bg-white/[0.06] transition-all"
+                className={`${fieldClass('password')} pr-11`}
               />
               <button
                 type="button"
@@ -91,15 +166,24 @@ export default function LoginPage() {
                 {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
+            {touched.password && errors.password && (
+              <motion.p
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-red-400 text-xs mt-1.5 ml-1"
+              >
+                {errors.password}
+              </motion.p>
+            )}
           </div>
 
-          {error && (
+          {serverError && (
             <motion.div
               initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
               className="px-3 py-2.5 rounded-xl bg-red-500/10 border border-red-500/20"
             >
-              <p className="text-red-400 text-xs">{error}</p>
+              <p className="text-red-400 text-xs">{serverError}</p>
             </motion.div>
           )}
 
@@ -127,7 +211,7 @@ export default function LoginPage() {
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.98 }}
             type="button"
-            onClick={() => router.push('/app')}
+            onClick={() => { window.location.href = '/api/auth/google'; }}
             className="w-full flex items-center justify-center gap-2.5 py-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.07] border border-white/[0.08] text-white/60 font-semibold text-sm transition-all"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24">

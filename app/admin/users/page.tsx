@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, Search, Shield, Crown, Trash2, UserPlus, Download, X, Eye, EyeOff } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
@@ -51,7 +51,7 @@ function SkeletonRow() {
   );
 }
 
-export default function AdminUsersPage() {
+function AdminUsersContent() {
   const searchParams = useSearchParams();
 
   const [users, setUsers] = useState<UserRow[]>([]);
@@ -555,5 +555,13 @@ export default function AdminUsersPage() {
         )}
       </AnimatePresence>
     </AdminLayout>
+  );
+}
+
+export default function AdminUsersPage() {
+  return (
+    <Suspense>
+      <AdminUsersContent />
+    </Suspense>
   );
 }

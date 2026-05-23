@@ -50,8 +50,26 @@ function awardBadge(d: BadgeData, id: BadgeId): BadgeData {
   return { ...d, earned: [...d.earned, { id, earnedAt: new Date().toISOString() }] };
 }
 
-function persist(d: BadgeData): BadgeData {
+function saveLocal(d: BadgeData): BadgeData {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+  return d;
+}
+
+async function syncToAPI(d: BadgeData) {
+  try {
+    await fetch('/api/badges', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(d),
+    });
+  } catch {
+    // offline — localStorage already saved
+  }
+}
+
+function persist(d: BadgeData): BadgeData {
+  saveLocal(d);
+  syncToAPI(d);
   return d;
 }
 
@@ -59,8 +77,32 @@ export function useBadges() {
   const [data, setData] = useState<BadgeData>(DEFAULT_DATA);
 
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) setData(JSON.parse(saved));
+    async function load() {
+      try {
+        const res = await fetch('/api/badges');
+        if (res.ok) {
+          const apiData: BadgeData | null = await res.json();
+          if (apiData && apiData.earned !== undefined) {
+            setData(apiData);
+            saveLocal(apiData);
+            return;
+          }
+          // API empty → migrate localStorage to API
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            const local: BadgeData = JSON.parse(raw);
+            setData(local);
+            syncToAPI(local);
+            return;
+          }
+        }
+      } catch {
+        // offline or not auth'd
+      }
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) setData(JSON.parse(raw));
+    }
+    load();
   }, []);
 
   const hasEarned = useCallback((id: BadgeId) => Boolean(data.earned.find((e) => e.id === id)), [data]);

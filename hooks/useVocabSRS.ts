@@ -33,7 +33,7 @@ function today(): string {
   return new Date().toISOString().split('T')[0];
 }
 
-function loadCards(): SRSCard[] {
+function loadLocal(): SRSCard[] {
   if (typeof window === 'undefined') return [];
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -43,8 +43,20 @@ function loadCards(): SRSCard[] {
   }
 }
 
-function saveCards(cards: SRSCard[]) {
+function saveLocal(cards: SRSCard[]) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));
+}
+
+async function syncToAPI(cards: SRSCard[]) {
+  try {
+    await fetch('/api/vocab-srs', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ cards }),
+    });
+  } catch {
+    // offline — localStorage already saved, will sync on next online session
+  }
 }
 
 export interface SRSStats {
@@ -60,8 +72,35 @@ export function useVocabSRS() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    setCards(loadCards());
-    setLoaded(true);
+    async function load() {
+      try {
+        const res = await fetch('/api/vocab-srs');
+        if (res.ok) {
+          const data = await res.json();
+          const apiCards: SRSCard[] = data.cards ?? [];
+          // API has data → use it as source of truth
+          if (apiCards.length > 0) {
+            setCards(apiCards);
+            saveLocal(apiCards);
+            setLoaded(true);
+            return;
+          }
+          // API empty but localStorage has cards → migrate to API
+          const local = loadLocal();
+          if (local.length > 0) {
+            setCards(local);
+            syncToAPI(local);
+            setLoaded(true);
+            return;
+          }
+        }
+      } catch {
+        // offline or not auth'd
+      }
+      setCards(loadLocal());
+      setLoaded(true);
+    }
+    load();
   }, []);
 
   const addNewCards = useCallback((
@@ -86,7 +125,8 @@ export function useVocabSRS() {
         }));
       if (newCards.length === 0) return prev;
       const updated = [...prev, ...newCards];
-      saveCards(updated);
+      saveLocal(updated);
+      syncToAPI(updated);
       return updated;
     });
   }, []);
@@ -107,7 +147,8 @@ export function useVocabSRS() {
           lastReviewed: today(),
         };
       });
-      saveCards(updated);
+      saveLocal(updated);
+      syncToAPI(updated);
       return updated;
     });
   }, []);

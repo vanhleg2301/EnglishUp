@@ -25,7 +25,7 @@ const DEFAULT_DATA: ChallengeData = {
   history: {},
 };
 
-const PERIOD_MS = 2 * 60 * 1000; // 2 minutes
+const PERIOD_MS = 2 * 60 * 1000;
 
 function getPeriodKey(ts = Date.now()): string {
   return String(Math.floor(ts / PERIOD_MS));
@@ -48,24 +48,69 @@ function formatCountdown(ms: number): string {
   return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 }
 
+function saveLocal(d: ChallengeData) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+}
+
+async function syncToAPI(d: ChallengeData) {
+  try {
+    await fetch('/api/daily-challenge', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(d),
+    });
+  } catch {
+    // offline — localStorage already saved
+  }
+}
+
+function resetExpiredStreak(d: ChallengeData): ChallengeData {
+  const current = getPeriodKey();
+  const prev = getPeriodKey(Date.now() - PERIOD_MS);
+  if (d.lastDate && d.lastDate !== current && d.lastDate !== prev) {
+    return { ...d, streak: 0 };
+  }
+  return d;
+}
+
 export function useDailyChallenge() {
   const [data, setData] = useState<ChallengeData>(DEFAULT_DATA);
   const [countdown, setCountdown] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    let d: ChallengeData = saved ? JSON.parse(saved) : { ...DEFAULT_DATA };
-
-    const current = getPeriodKey();
-    const prev = getPeriodKey(Date.now() - PERIOD_MS);
-    if (d.lastDate && d.lastDate !== current && d.lastDate !== prev) {
-      d = { ...d, streak: 0 };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+    async function load() {
+      try {
+        const res = await fetch('/api/daily-challenge');
+        if (res.ok) {
+          const apiData: ChallengeData | null = await res.json();
+          if (apiData && 'streak' in apiData) {
+            const d = resetExpiredStreak(apiData);
+            setData(d);
+            saveLocal(d);
+            setLoading(false);
+            return;
+          }
+          // API empty → migrate localStorage
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            const local: ChallengeData = resetExpiredStreak(JSON.parse(raw));
+            setData(local);
+            syncToAPI(local);
+            setLoading(false);
+            return;
+          }
+        }
+      } catch {
+        // offline or not auth'd
+      }
+      const raw = localStorage.getItem(STORAGE_KEY);
+      const d = raw ? resetExpiredStreak(JSON.parse(raw)) : { ...DEFAULT_DATA };
+      if (raw) saveLocal(d);
+      setData(d);
+      setLoading(false);
     }
-
-    setData(d);
-    setLoading(false);
+    load();
   }, []);
 
   useEffect(() => {
@@ -107,7 +152,8 @@ export function useDailyChallenge() {
       history: { ...data.history, [current]: entry },
     };
 
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    saveLocal(updated);
+    syncToAPI(updated);
     setData(updated);
     return correct;
   }, [challenge, data]);

@@ -59,10 +59,11 @@ export async function POST(req: NextRequest) {
     })
   } catch (err) {
     console.error('[forgot-password]', err)
-    return NextResponse.json(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    )
+    const msg = err instanceof Error ? err.message : ''
+    if (msg.includes('ECONNREFUSED') || msg.includes('MongoNetwork')) {
+      return NextResponse.json({ success: false, error: 'Cannot connect to server. Please try again later.' }, { status: 503 })
+    }
+    return NextResponse.json({ success: false, error: 'An error occurred. Please try again.' }, { status: 500 })
   }
 }
 

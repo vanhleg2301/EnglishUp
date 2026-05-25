@@ -19,6 +19,7 @@ interface AuthContextValue {
   user: AuthUser | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
+  register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
 }
@@ -69,6 +70,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (mounted.current) setUser(json.data);
   }, []);
 
+  const register = useCallback(async (name: string, email: string, password: string) => {
+    const res = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password }),
+    });
+    const json = await res.json();
+    if (!json.success) throw new Error(json.error ?? 'Registration failed');
+    if (mounted.current) setUser(json.data);
+  }, []);
+
   const logout = useCallback(async () => {
     await fetch('/api/auth/logout', { method: 'POST' });
     if (mounted.current) setUser(null);
@@ -76,7 +88,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [router]);
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, refreshUser }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );

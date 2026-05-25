@@ -362,7 +362,7 @@ export default function ProfilePage() {
                   <div>
                     <p className="text-sm font-semibold text-red-300">Reset all progress?</p>
                     <p className="text-xs text-white/35 mt-0.5">
-                      Xóa toàn bộ {progress.completedDays.length} ngày đã học, {progress.totalXP.toLocaleString()} XP và streak. Không thể hoàn tác.
+                      This will delete all {progress.completedDays.length} completed days, {progress.totalXP.toLocaleString()} XP and your streak. This cannot be undone.
                     </p>
                   </div>
                 </div>

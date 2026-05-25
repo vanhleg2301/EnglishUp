@@ -90,10 +90,17 @@ export async function POST(req: NextRequest) {
     return setAuthCookie(response, token)
   } catch (err) {
     console.error('[register]', err)
-    return NextResponse.json(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    )
+    if ((err as { code?: number }).code === 11000) {
+      return NextResponse.json({ success: false, error: 'This email is already registered. Please log in or use a different email.' }, { status: 409 })
+    }
+    const msg = err instanceof Error ? err.message : ''
+    if (msg.includes('ECONNREFUSED') || msg.includes('MongoNetwork')) {
+      return NextResponse.json({ success: false, error: 'Cannot connect to server. Please try again later.' }, { status: 503 })
+    }
+    if (msg.includes('buffering timed out') || msg.includes('timed out')) {
+      return NextResponse.json({ success: false, error: 'Server is busy. Please try again in a few seconds.' }, { status: 503 })
+    }
+    return NextResponse.json({ success: false, error: 'An unexpected error occurred. Please try again.' }, { status: 500 })
   }
 }
 

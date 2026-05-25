@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Mail, Lock, Eye, EyeOff, ArrowRight, Loader2 } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface FieldErrors {
   email: string;
@@ -26,12 +27,13 @@ function validateEmail(email: string): string {
 
 function validatePassword(password: string): string {
   if (!password) return 'Password is required.';
-  if (password.length < 6) return 'Password must be at least 6 characters.';
+  if (password.length < 8) return 'Password must be at least 8 characters.';
   return '';
 }
 
 export default function LoginPage() {
   const router = useRouter();
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPw, setShowPw] = useState(false);
@@ -68,20 +70,10 @@ export default function LoginPage() {
     setServerError('');
     setLoading(true);
     try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-      const json = await res.json();
-      if (json.success) {
-        router.push('/app');
-      } else {
-        setServerError(json.error ?? 'Incorrect email or password.');
-        setLoading(false);
-      }
-    } catch {
-      setServerError('Network error. Please try again.');
+      await login(email, password);
+      router.push('/app');
+    } catch (err) {
+      setServerError(err instanceof Error ? err.message : 'Incorrect email or password.');
       setLoading(false);
     }
   }

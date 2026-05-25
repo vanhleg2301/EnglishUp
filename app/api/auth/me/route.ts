@@ -36,10 +36,7 @@ export async function GET() {
     })
   } catch (err) {
     console.error('[me GET]', err)
-    return NextResponse.json(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, error: 'Failed to load account info. Please try again.' }, { status: 500 })
   }
 }
 
@@ -99,10 +96,7 @@ export async function PATCH(req: NextRequest) {
     return setAuthCookie(response, token)
   } catch (err) {
     console.error('[me PATCH]', err)
-    return NextResponse.json(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, error: 'Failed to update account info. Please try again.' }, { status: 500 })
   }
 }
 

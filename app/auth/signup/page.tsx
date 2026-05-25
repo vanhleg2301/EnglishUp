@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Loader2, CheckCircle2 } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface FieldErrors {
   name: string;
@@ -44,6 +45,7 @@ function validate(fields: { name: string; email: string; password: string; confi
 
 export default function SignupPage() {
   const router = useRouter();
+  const { register } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -84,24 +86,14 @@ export default function SignupPage() {
 
     setLoading(true);
     try {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }),
-      });
-      const json = await res.json();
-      if (json.success) {
-        setSuccess(true);
-        await new Promise(r => setTimeout(r, 1200));
-        router.push('/app');
-      } else {
-        setLoading(false);
-        setErrors(prev => ({ ...prev, email: json.error ?? 'Registration failed.' }));
-        setTouched(prev => ({ ...prev, email: true }));
-      }
-    } catch {
+      await register(name, email, password);
+      setSuccess(true);
+      await new Promise(r => setTimeout(r, 1200));
+      router.push('/app');
+    } catch (err) {
       setLoading(false);
-      setErrors(prev => ({ ...prev, email: 'Network error. Please try again.' }));
+      const msg = err instanceof Error ? err.message : 'Registration failed.';
+      setErrors(prev => ({ ...prev, email: msg }));
       setTouched(prev => ({ ...prev, email: true }));
     }
   }

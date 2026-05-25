@@ -11,8 +11,9 @@ export async function GET() {
     await connectDB();
     const doc = await UserDailyChallenge.findOne({ userId: authUser.userId });
     return NextResponse.json(doc ?? null);
-  } catch {
-    return NextResponse.json({ error: 'Failed to fetch daily challenge' }, { status: 500 });
+  } catch (err) {
+    console.error('[daily-challenge GET]', err)
+    return NextResponse.json({ error: 'Failed to load daily challenge. Please try again.' }, { status: 500 });
   }
 }
 
@@ -29,7 +30,8 @@ export async function PUT(req: Request) {
       { upsert: true, new: true }
     );
     return NextResponse.json({ ok: true });
-  } catch {
-    return NextResponse.json({ error: 'Failed to save daily challenge' }, { status: 500 });
+  } catch (err) {
+    console.error('[daily-challenge PUT]', err)
+    return NextResponse.json({ error: 'Failed to save daily challenge. Data has been saved offline.' }, { status: 500 });
   }
 }

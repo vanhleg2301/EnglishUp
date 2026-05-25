@@ -30,7 +30,14 @@ export async function POST(req: NextRequest) {
         metadata: { reason: 'User not found' },
       })
       return NextResponse.json(
-        { success: false, error: 'Invalid credentials' },
+        { success: false, error: 'This email is not registered. Would you like to create an account?' },
+        { status: 401 }
+      )
+    }
+
+    if (!user.password) {
+      return NextResponse.json(
+        { success: false, error: 'This account uses Google sign-in. Please use the "Continue with Google" button.' },
         { status: 401 }
       )
     }
@@ -47,7 +54,7 @@ export async function POST(req: NextRequest) {
         metadata: { reason: 'Wrong password' },
       })
       return NextResponse.json(
-        { success: false, error: 'Invalid credentials' },
+        { success: false, error: 'Incorrect password. Please try again or use "Forgot?" to reset.' },
         { status: 401 }
       )
     }
@@ -92,10 +99,14 @@ export async function POST(req: NextRequest) {
     return setAuthCookie(response, token)
   } catch (err) {
     console.error('[login]', err)
-    return NextResponse.json(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    )
+    const msg = err instanceof Error ? err.message : ''
+    if (msg.includes('ECONNREFUSED') || msg.includes('connect') || msg.includes('MongoNetwork')) {
+      return NextResponse.json({ success: false, error: 'Cannot connect to server. Please try again later.' }, { status: 503 })
+    }
+    if (msg.includes('buffering timed out') || msg.includes('timed out')) {
+      return NextResponse.json({ success: false, error: 'Server is busy. Please try again in a few seconds.' }, { status: 503 })
+    }
+    return NextResponse.json({ success: false, error: 'An unexpected error occurred. Please try again.' }, { status: 500 })
   }
 }
 

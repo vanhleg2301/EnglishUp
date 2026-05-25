@@ -11,8 +11,9 @@ export async function GET() {
     await connectDB();
     const doc = await VocabSRS.findOne({ userId: authUser.userId });
     return NextResponse.json({ cards: doc?.cards ?? [] });
-  } catch {
-    return NextResponse.json({ error: 'Failed to fetch vocab SRS' }, { status: 500 });
+  } catch (err) {
+    console.error('[vocab-srs GET]', err)
+    return NextResponse.json({ error: 'Failed to load flashcard data. Please try again.' }, { status: 500 });
   }
 }
 
@@ -29,7 +30,8 @@ export async function PUT(req: Request) {
       { upsert: true, new: true }
     );
     return NextResponse.json({ ok: true });
-  } catch {
-    return NextResponse.json({ error: 'Failed to save vocab SRS' }, { status: 500 });
+  } catch (err) {
+    console.error('[vocab-srs PUT]', err)
+    return NextResponse.json({ error: 'Failed to save flashcard progress. Data has been saved offline.' }, { status: 500 });
   }
 }

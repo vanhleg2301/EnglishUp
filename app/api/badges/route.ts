@@ -11,8 +11,9 @@ export async function GET() {
     await connectDB();
     const doc = await UserBadges.findOne({ userId: authUser.userId });
     return NextResponse.json(doc ?? null);
-  } catch {
-    return NextResponse.json({ error: 'Failed to fetch badges' }, { status: 500 });
+  } catch (err) {
+    console.error('[badges GET]', err)
+    return NextResponse.json({ error: 'Failed to load badge data. Please try again.' }, { status: 500 });
   }
 }
 
@@ -30,7 +31,8 @@ export async function PUT(req: Request) {
       { upsert: true, new: true }
     );
     return NextResponse.json({ ok: true });
-  } catch {
-    return NextResponse.json({ error: 'Failed to save badges' }, { status: 500 });
+  } catch (err) {
+    console.error('[badges PUT]', err)
+    return NextResponse.json({ error: 'Failed to save badges. Data has been saved offline.' }, { status: 500 });
   }
 }

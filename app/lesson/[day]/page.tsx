@@ -232,8 +232,8 @@ export default function LessonPage() {
                   💔
                 </motion.div>
                 <div className="space-y-2">
-                  <h2 className="text-4xl font-extrabold text-white">Hết tim rồi!</h2>
-                  <p className="text-white/60">Đừng nản lòng, hãy thử lại nhé!</p>
+                  <h2 className="text-4xl font-extrabold text-white">Out of hearts!</h2>
+                  <p className="text-white/60">Don't give up, try again!</p>
                 </div>
                 <div className="flex gap-3 max-w-xs mx-auto">
                   <button
@@ -247,7 +247,7 @@ export default function LessonPage() {
                     className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl font-bold text-lg bg-gradient-to-r from-red-600 to-rose-600 text-white"
                   >
                     <RotateCcw className="w-5 h-5" />
-                    Thử lại
+                    Try Again
                   </button>
                 </div>
               </div>
@@ -275,20 +275,20 @@ export default function LessonPage() {
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center flex-shrink-0 text-xl">✓</div>
                   <div>
-                    <p className="font-bold text-emerald-300 text-base leading-none">Chính xác!</p>
-                    <p className="text-emerald-400/60 text-sm mt-0.5">Tiếp tục phát huy nhé</p>
+                    <p className="font-bold text-emerald-300 text-base leading-none">Correct!</p>
+                    <p className="text-emerald-400/60 text-sm mt-0.5">Keep it up</p>
                   </div>
                 </div>
               ) : (
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-2xl bg-red-500/20 border border-red-500/30 flex items-center justify-center flex-shrink-0 text-xl">✗</div>
-                    <p className="font-bold text-red-300 text-base">Chưa đúng</p>
+                    <p className="font-bold text-red-300 text-base">Incorrect</p>
                   </div>
 
                   {feedbackAnswer && (
                     <div className="flex items-start gap-2 pl-1">
-                      <span className="text-white/30 text-xs mt-1 flex-shrink-0">Đáp án đúng</span>
+                      <span className="text-white/30 text-xs mt-1 flex-shrink-0">Correct answer</span>
                       <div className="flex-1 px-3 py-2 rounded-xl bg-white/8 border border-white/12">
                         <p className="text-white font-bold text-sm leading-relaxed">{feedbackAnswer}</p>
                       </div>

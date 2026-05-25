@@ -46,8 +46,8 @@ export default function LessonComplete({ day, correctCount, totalExercises, xpEa
   const [showCert, setShowCert] = useState(false);
   const score = Math.round((correctCount / totalExercises) * 100);
   const stars = score >= 90 ? 3 : score >= 60 ? 2 : 1;
-  const title = score >= 90 ? 'Xuất sắc!' : score >= 60 ? 'Khá tốt!' : 'Cố gắng hơn nhé!';
-  const subtitle = score >= 60 ? `Ngày ${day} hoàn thành` : 'Hãy ôn lại và thử lại!';
+  const title = score >= 90 ? 'Excellent!' : score >= 60 ? 'Well done!' : 'Keep trying!';
+  const subtitle = score >= 60 ? `Day ${day} complete` : 'Review and try again!';
 
   useEffect(() => {
     const t = setTimeout(() => setShowConfetti(false), 3500);
@@ -104,9 +104,9 @@ export default function LessonComplete({ day, correctCount, totalExercises, xpEa
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4">
           {[
-            { label: 'Điểm số', value: `${score}%`, icon: '🎯' },
-            { label: 'Đúng', value: `${correctCount}/${totalExercises}`, icon: '✅' },
-            { label: 'XP nhận', value: `+${xpEarned}`, icon: '⚡' },
+            { label: 'Score', value: `${score}%`, icon: '🎯' },
+            { label: 'Correct', value: `${correctCount}/${totalExercises}`, icon: '✅' },
+            { label: 'XP Earned', value: `+${xpEarned}`, icon: '⚡' },
           ].map((stat) => (
             <motion.div
               key={stat.label}
@@ -166,7 +166,7 @@ export default function LessonComplete({ day, correctCount, totalExercises, xpEa
               href={`/lesson/${day + 1}`}
               className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl font-bold text-lg bg-gradient-to-r from-violet-600 to-indigo-600 text-white"
             >
-              Bài tiếp theo
+              Next Lesson
               <ChevronRight className="w-5 h-5" />
             </Link>
           ) : (
@@ -175,7 +175,7 @@ export default function LessonComplete({ day, correctCount, totalExercises, xpEa
               className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl font-bold text-lg bg-gradient-to-r from-violet-600 to-indigo-600 text-white"
             >
               <Home className="w-5 h-5" />
-              Về trang chủ
+              Back to Home
             </Link>
           )}
         </div>

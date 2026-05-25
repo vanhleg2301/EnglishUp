@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
 
-const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET ?? 'fallback-secret');
+const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET ?? '');
 
 interface JwtPayload {
   userId: string;

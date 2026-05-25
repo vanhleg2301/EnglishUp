@@ -17,7 +17,7 @@ function ScoreRing({ score }: { score: number }) {
   const radius = 54;
   const circumference = 2 * Math.PI * radius;
   const color = score >= 80 ? '#10B981' : score >= 50 ? '#F59E0B' : '#EF4444';
-  const label = score >= 80 ? 'Tuyệt vời!' : score >= 50 ? 'Khá tốt!' : 'Cần luyện thêm';
+  const label = score >= 80 ? 'Excellent!' : score >= 50 ? 'Good!' : 'Keep practicing';
 
   return (
     <div className="flex flex-col items-center gap-2">
@@ -104,7 +104,7 @@ export default function PronunciationCheck({ exercise, onComplete }: Props) {
   return (
     <div className="space-y-6">
       <div className="text-center space-y-1">
-        <p className="text-white/50 text-sm uppercase tracking-wider font-semibold">Luyện phát âm</p>
+        <p className="text-white/50 text-sm uppercase tracking-wider font-semibold">Pronunciation Practice</p>
         <p className="text-xl font-semibold text-white">{exercise.question}</p>
       </div>
 
@@ -119,7 +119,7 @@ export default function PronunciationCheck({ exercise, onComplete }: Props) {
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 text-sm hover:bg-cyan-500/30 transition-all"
         >
           <Volume2 className="w-4 h-4" />
-          Nghe giọng chuẩn
+          Listen to example
         </button>
       </div>
 
@@ -160,12 +160,12 @@ export default function PronunciationCheck({ exercise, onComplete }: Props) {
 
             <p className="text-center text-white/40 text-sm">
               {status === 'idle'
-                ? attempts > 0 ? 'Nhấp để thử lại' : 'Nhấp vào micro và nói câu trên'
-                : 'Đang nghe... nói to và rõ ràng'}
+                ? attempts > 0 ? 'Tap to try again' : 'Tap the mic and say the phrase'
+                : 'Listening... speak clearly'}
             </p>
 
             <p className="text-center text-xs text-white/20">
-              Mẹo: Nói chậm, rõ từng từ — đặc biệt chú ý các âm cuối
+              Tip: Speak slowly and clearly — pay attention to final sounds
             </p>
           </motion.div>
         ) : (
@@ -182,7 +182,7 @@ export default function PronunciationCheck({ exercise, onComplete }: Props) {
 
             {/* Word-by-word breakdown */}
             <div className="rounded-2xl bg-black/30 border border-white/10 p-4 space-y-3">
-              <p className="text-white/40 text-xs uppercase tracking-wider font-semibold">Phân tích từng từ</p>
+              <p className="text-white/40 text-xs uppercase tracking-wider font-semibold">Word Breakdown</p>
               <div className="flex flex-wrap gap-2">
                 {result!.results.map((r, i) => (
                   <motion.span
@@ -203,7 +203,7 @@ export default function PronunciationCheck({ exercise, onComplete }: Props) {
 
               {heard && (
                 <div className="pt-2 border-t border-white/5">
-                  <p className="text-white/30 text-xs">Hệ thống nghe được:</p>
+                  <p className="text-white/30 text-xs">System heard:</p>
                   <p className="text-white/60 text-sm italic mt-0.5">"{heard}"</p>
                 </div>
               )}
@@ -217,10 +217,10 @@ export default function PronunciationCheck({ exercise, onComplete }: Props) {
                 transition={{ delay: 0.5 }}
                 className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-200/70 space-y-1"
               >
-                <p className="font-semibold text-amber-300">Lời khuyên:</p>
-                <p>• Nghe lại giọng mẫu, chú ý trọng âm (âm nhấn)</p>
-                <p>• Nói chậm hơn, từng âm tiết rõ ràng</p>
-                <p>• Đảm bảo phát âm đủ âm cuối (-t, -d, -s, -th)</p>
+                <p className="font-semibold text-amber-300">Tips:</p>
+                <p>• Listen to the example again, focus on word stress</p>
+                <p>• Speak slower, enunciate each syllable clearly</p>
+                <p>• Make sure to pronounce final sounds (-t, -d, -s, -th)</p>
               </motion.div>
             )}
 
@@ -230,14 +230,14 @@ export default function PronunciationCheck({ exercise, onComplete }: Props) {
                 className="flex items-center gap-2 px-4 py-4 rounded-2xl border-2 border-white/10 text-white/50 hover:text-white hover:border-white/20 transition-all text-sm"
               >
                 <RotateCcw className="w-4 h-4" />
-                Thử lại
+                Try Again
               </button>
               <motion.button
                 whileTap={{ scale: 0.97 }}
                 onClick={handleContinue}
                 className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl font-bold text-lg bg-gradient-to-r from-violet-600 to-indigo-600 text-white"
               >
-                Tiếp tục
+                Continue
                 <ChevronRight className="w-5 h-5" />
               </motion.button>
             </div>

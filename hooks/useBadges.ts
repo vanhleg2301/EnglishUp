@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { shadowingItems } from '@/lib/shadowingData';
+import { fetchWithTimeout } from '@/lib/fetchTimeout';
 
 const STORAGE_KEY = 'eng-badges';
 
@@ -79,7 +80,7 @@ export function useBadges() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch('/api/badges');
+        const res = await fetchWithTimeout('/api/badges');
         if (res.ok) {
           const apiData: BadgeData | null = await res.json();
           if (apiData && apiData.earned !== undefined) {

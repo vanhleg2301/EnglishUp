@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useRef, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { fetchWithTimeout } from '@/lib/fetchTimeout';
 
 export interface AuthUser {
   userId: string;
@@ -39,7 +40,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const refreshUser = useCallback(async () => {
     try {
-      const res = await fetch('/api/auth/me');
+      const res = await fetchWithTimeout('/api/auth/me');
       if (res.ok) {
         const json = await res.json();
         if (json.success && mounted.current) {

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import type { UserProgress, DayProgress } from '@/types';
+import { fetchWithTimeout } from '@/lib/fetchTimeout';
 
 const DEFAULT_PROGRESS: UserProgress = {
   totalXP: 0,
@@ -21,7 +22,7 @@ export function useProgress() {
 
   const fetchProgress = useCallback(async () => {
     try {
-      const res = await fetch('/api/progress');
+      const res = await fetchWithTimeout('/api/progress');
       if (res.ok) {
         const data = await res.json();
         if (mounted.current) setProgress(data);
@@ -42,7 +43,7 @@ export function useProgress() {
 
   const saveDay = useCallback(async (day: number, score: number, xpEarned: number) => {
     try {
-      const res = await fetch('/api/progress', {
+      const res = await fetchWithTimeout('/api/progress', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ day, score, xpEarned }),
@@ -71,7 +72,7 @@ export function useProgress() {
 
   const resetProgress = useCallback(async (): Promise<boolean> => {
     try {
-      const res = await fetch('/api/progress', { method: 'DELETE' });
+      const res = await fetchWithTimeout('/api/progress', { method: 'DELETE' });
       if (res.ok) {
         const data = await res.json();
         if (mounted.current) setProgress(data);

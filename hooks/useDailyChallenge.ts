@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { CHALLENGE_POOL } from '@/lib/dailyChallengeData';
 import type { DailyChallenge } from '@/lib/dailyChallengeData';
+import { fetchWithTimeout } from '@/lib/fetchTimeout';
 
 const STORAGE_KEY = 'eng-challenge-data';
 
@@ -81,7 +82,7 @@ export function useDailyChallenge() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch('/api/daily-challenge');
+        const res = await fetchWithTimeout('/api/daily-challenge');
         if (res.ok) {
           const apiData: ChallengeData | null = await res.json();
           if (apiData && 'streak' in apiData) {

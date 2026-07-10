@@ -13,6 +13,7 @@ import { useProgress } from '@/hooks/useProgress';
 import { useDailyChallenge } from '@/hooks/useDailyChallenge';
 import { getLevelInfo, getLevelProgress } from '@/lib/levels';
 import { useAuth } from '@/contexts/AuthContext';
+import { isNativeIOS } from '@/lib/platform';
 import Logo from './Logo';
 
 interface SidebarProps {
@@ -217,8 +218,8 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           </div>
         )}
 
-        {/* Upgrade banner (free users) */}
-        {user?.subscription?.status === 'free' && (
+        {/* Upgrade banner (free users) — hidden on iOS native (Apple 3.1.1: no external purchase links) */}
+        {user?.subscription?.status === 'free' && !isNativeIOS() && (
           <div className="px-3 pb-1">
             <Link href="/pricing" onClick={onClose}>
               <div className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-violet-500/10 border border-violet-500/20 hover:bg-violet-500/15 transition-colors">

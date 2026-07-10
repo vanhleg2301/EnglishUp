@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Check, Crown, Loader2, CheckCircle2, Zap } from 'lucide-react';
 import AppShell from '@/components/AppShell';
 import { useAuth } from '@/contexts/AuthContext';
+import { isNativeIOS } from '@/lib/platform';
 
 const FEATURES = [
   'All 30 lessons',
@@ -45,6 +46,25 @@ export default function PricingPage() {
   function showToast(message: string, type: 'success' | 'error' | 'info') {
     setToast({ message, type });
     setTimeout(() => setToast(null), 4000);
+  }
+
+  // Apple Guideline 3.1.1: no purchase flow for digital content outside
+  // Apple's In-App Purchase — direct native iOS users to manage on the web instead.
+  if (isNativeIOS()) {
+    return (
+      <AppShell>
+        <div className="max-w-md mx-auto px-4 py-16 text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/25 text-violet-300 text-xs font-bold mb-4">
+            <Crown className="w-3 h-3" />
+            Pro Plans
+          </div>
+          <h1 className="text-2xl font-black text-white mb-3">Manage your subscription on the web</h1>
+          <p className="text-white/40 text-sm">
+            Visit englishup.vn from a browser to view or upgrade your plan.
+          </p>
+        </div>
+      </AppShell>
+    );
   }
 
   async function handleSubscribe(plan: 'monthly' | 'yearly') {

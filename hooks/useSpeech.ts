@@ -93,6 +93,18 @@ export function scorePronunciation(correct: string, heard: string): { results: P
   return { results, score };
 }
 
+/**
+ * WKWebView (Capacitor iOS wrapper) does not implement the Web Speech
+ * SpeechRecognition API — only full Safari does. Check this before wiring
+ * up a mic button so the UI can disable/hide it instead of relying on the
+ * startListening() alert() fallback.
+ */
+export function isSpeechRecognitionSupported(): boolean {
+  if (typeof window === 'undefined') return false;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return Boolean((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition);
+}
+
 export function useSpeechRecognition() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const recognitionRef = useRef<any>(null);
@@ -103,7 +115,7 @@ export function useSpeechRecognition() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       if (!SR) {
-        alert('Trình duyệt không hỗ trợ nhận dạng giọng nói. Hãy dùng Chrome.');
+        alert('Tính năng nhận dạng giọng nói không khả dụng ở đây. Hãy mở englishup.vn bằng Safari hoặc Chrome để luyện phát âm.');
         return;
       }
       const rec = new SR();
@@ -145,7 +157,7 @@ export function useLiveSpeechRecognition() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       if (!SR) {
-        alert('Trình duyệt không hỗ trợ nhận dạng giọng nói. Hãy dùng Chrome.');
+        alert('Tính năng nhận dạng giọng nói không khả dụng ở đây. Hãy mở englishup.vn bằng Safari hoặc Chrome để luyện phát âm.');
         return;
       }
       const rec = new SR();

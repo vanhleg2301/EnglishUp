@@ -124,6 +124,35 @@ const config = {
 3. App cần có `manifest.json` và icon 192x192, 512x512 trong `/public`
 4. HTTPS là bắt buộc cho PWA
 
+## iOS App (Capacitor) — App Store
+
+App được đóng gói cho App Store bằng **Capacitor**: một shell native (WKWebView) load thẳng domain production đã deploy trên Vercel — không phải rebuild UI, không static export (vì app dùng API routes/middleware/edge functions).
+
+### Cấu trúc
+
+- `capacitor.config.ts` — cấu hình `appId` (`com.englishup.app`), `server.url` trỏ về domain production (đặt qua `NEXT_PUBLIC_APP_URL`).
+- `ios/App/` — Xcode project sinh bởi `npx cap add ios`. Icon 1024x1024 (không alpha) và splash 2732x2732 nằm trong `ios/App/App/Assets.xcassets/`.
+- `lib/platform.ts` — helper `isNativeIOS()` để ẩn luồng thanh toán Stripe trong app iOS (Apple Guideline 3.1.1: nội dung số phải mua qua In-App Purchase, không phải Stripe). Áp dụng ở `components/PremiumGate.tsx`, `components/Sidebar.tsx`, `app/pricing/page.tsx`, `app/profile/page.tsx`.
+- `hooks/useSpeech.ts` — WKWebView không hỗ trợ `SpeechRecognition` (chỉ Safari đầy đủ mới có). Dùng `isSpeechRecognitionSupported()` để kiểm tra trước khi bật mic; nếu không khả dụng, hướng dẫn người dùng mở bằng Safari/Chrome.
+
+### Build (không cần Mac)
+
+Vì build/sign iOS bắt buộc cần Xcode (chỉ chạy trên macOS), dùng dịch vụ build cloud (khuyến nghị **Codemagic**, free tier hỗ trợ Capacitor):
+
+1. Cập nhật `NEXT_PUBLIC_APP_URL` trong `capacitor.config.ts` trỏ đúng domain production, sau đó chạy `npx cap sync ios` để đồng bộ.
+2. Kết nối repo GitHub với Codemagic, cấu hình build trỏ vào `ios/App`.
+3. Codemagic tạo/upload certificate + provisioning profile qua App Store Connect API key (làm qua giao diện web, không cần Mac).
+4. Build xuất `.ipa` → tự động upload lên App Store Connect (TestFlight) để test trước khi submit.
+
+### Checklist review App Store
+
+- [ ] Đăng ký Apple Developer Program (99 USD/năm)
+- [ ] Có trang privacy policy public (route `/privacy`)
+- [ ] Khai báo App Privacy Details (email, tên, dữ liệu học tập lưu MongoDB)
+- [ ] Chuẩn bị demo account cho reviewer test đăng nhập
+- [ ] Test kỹ tính năng shadowing/pronunciation (Web Speech API) trên TestFlight
+- [ ] Xác nhận không còn nút mua/nâng cấp Stripe nào hiển thị trong app iOS
+
 ## Checklist trước khi go-live
 
 - [ ] `JWT_SECRET` dài ≥ 32 chars, random

@@ -7,6 +7,7 @@ import Link from 'next/link';
 import AppShell from '@/components/AppShell';
 import { useAuth } from '@/contexts/AuthContext';
 import { useProgress } from '@/hooks/useProgress';
+import { isNativeIOS } from '@/lib/platform';
 
 function getInitials(name: string) {
   return name
@@ -210,7 +211,7 @@ export default function ProfilePage() {
         >
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-bold text-sm text-white">Subscription</h2>
-            {user.subscription.status !== 'active' && (
+            {user.subscription.status !== 'active' && !isNativeIOS() && (
               <Link href="/pricing" className="text-xs text-violet-400 hover:text-violet-300 transition-colors font-semibold">
                 Upgrade
               </Link>
@@ -229,7 +230,7 @@ export default function ProfilePage() {
                 }
               </p>
             </div>
-            {user.subscription.status === 'free' && (
+            {user.subscription.status === 'free' && !isNativeIOS() && (
               <Link href="/pricing">
                 <div className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-xs font-bold hover:from-violet-500 hover:to-indigo-500 transition-all">
                   Upgrade to Pro

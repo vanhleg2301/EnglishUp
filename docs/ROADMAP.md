@@ -28,6 +28,9 @@ Wrap các page phức tạp với React Error Boundary để tránh toàn app cr
 Gửi daily reminder lúc 8h sáng: "Bạn có 5 thẻ vocab cần ôn hôm nay!"  
 Dùng Web Push API + service worker background sync.
 
+### ✅ P2.0 — iOS App Store submission (Capacitor)
+Bọc web app bằng Capacitor thành WKWebView native shell, ẩn luồng thanh toán Stripe trong app iOS (Apple Guideline 3.1.1), thêm icon/splash cho `ios/App`. Xem `docs/DEPLOYMENT.md` mục "iOS App (Capacitor)" để build/submit qua Codemagic (không cần Mac). Còn lại: đăng ký Apple Developer Program, tạo App Store Connect listing, submit review — thực hiện thủ công ngoài repo.
+
 ### P2.2 — Real Leaderboard
 Thay mock data bằng MongoDB aggregate query real users.  
 Privacy: hiển thị tên ẩn danh (chỉ 2 ký tự đầu).

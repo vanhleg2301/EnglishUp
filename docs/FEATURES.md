@@ -35,6 +35,7 @@
 | Onboarding | Goal selection + quick level check | ✅ Done |
 | PWA | Installable trên iOS/Android | ✅ Done |
 | PWA | Service Worker + offline caching | ✅ Done |
+| iOS App | Capacitor native shell (WKWebView) cho App Store submission | ✅ Done |
 | Phrases | Cụm từ thông dụng theo chủ đề | ✅ Done |
 | Conversation | Hội thoại thực tế với audio | ✅ Done |
 | IPA Phonetics | Bảng phiên âm + pronunciation guide | ✅ Done |

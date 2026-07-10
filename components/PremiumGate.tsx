@@ -5,6 +5,7 @@ import { Lock, Crown, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import { isNativeIOS } from '@/lib/platform';
 
 interface PremiumGateProps {
   children?: React.ReactNode;
@@ -30,12 +31,16 @@ function LockCard({ featureName }: { featureName?: string }) {
       <p className="text-white/40 text-sm mb-4">
         Upgrade to unlock all lessons and features.
       </p>
-      <Link href="/pricing">
-        <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold text-sm transition-all shadow-lg shadow-violet-500/20">
-          <Crown className="w-3.5 h-3.5" />
-          Upgrade to Pro
-        </div>
-      </Link>
+      {isNativeIOS() ? (
+        <p className="text-white/30 text-xs">Manage your subscription at englishup.vn</p>
+      ) : (
+        <Link href="/pricing">
+          <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold text-sm transition-all shadow-lg shadow-violet-500/20">
+            <Crown className="w-3.5 h-3.5" />
+            Upgrade to Pro
+          </div>
+        </Link>
+      )}
     </motion.div>
   );
 }

@@ -22,5 +22,8 @@ const ProgressSchema = new Schema(
   { timestamps: true }
 );
 
+ProgressSchema.index({ userId: 1 });
+ProgressSchema.index({ totalXP: -1 });
+
 export const Progress =
   mongoose.models.Progress || mongoose.model<ProgressDocument>('Progress', ProgressSchema);

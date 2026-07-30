@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion';
 import { useRef, useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
@@ -220,8 +220,9 @@ function Counter({ value, suffix }: { value: number; suffix: string }) {
 export default function LandingPage() {
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
-  const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '25%']);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.85], [1, 0]);
+  const smoothProgress = useSpring(scrollYProgress, { stiffness: 140, damping: 30, restDelta: 0.001 });
+  const heroY = useTransform(smoothProgress, [0, 1], ['0%', '25%']);
+  const heroOpacity = useTransform(smoothProgress, [0, 0.85], [1, 0]);
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -232,7 +233,7 @@ export default function LandingPage() {
         initial={{ y: -24, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="fixed top-0 left-0 right-0 z-50 border-b border-white/[0.05] backdrop-blur-2xl bg-[#060610]/75"
+        className="fixed top-0 left-0 right-0 z-50 border-b border-white/[0.05] backdrop-blur-md bg-[#060610]/90"
       >
         <div className="max-w-6xl mx-auto px-4 py-3.5 flex items-center justify-between">
           <Logo href="/" size="md" />
@@ -263,17 +264,17 @@ export default function LandingPage() {
       {/* ── Hero ── */}
       <section ref={heroRef} id="hero" className="relative min-h-screen flex items-center overflow-hidden pt-16">
         {/* bg glows */}
-        <div className="absolute inset-0 pointer-events-none select-none">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[600px] bg-violet-700/12 rounded-full blur-[140px]" />
-          <div className="absolute top-1/3 left-1/5 w-[400px] h-[400px] bg-indigo-700/10 rounded-full blur-[100px]" />
-          <div className="absolute bottom-0 right-1/4 w-[300px] h-[300px] bg-cyan-600/8 rounded-full blur-[80px]" />
+        <div className="absolute inset-0 pointer-events-none select-none transform-gpu" style={{ contain: 'paint' }}>
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[600px] bg-violet-700/12 rounded-full blur-[140px] transform-gpu" />
+          <div className="absolute top-1/3 left-1/5 w-[400px] h-[400px] bg-indigo-700/10 rounded-full blur-[100px] transform-gpu" />
+          <div className="absolute bottom-0 right-1/4 w-[300px] h-[300px] bg-cyan-600/8 rounded-full blur-[80px] transform-gpu" />
           {/* dot grid */}
           <div className="absolute inset-0 opacity-[0.025]"
             style={{ backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
         </div>
 
-        <motion.div style={{ y: heroY, opacity: heroOpacity }}
-          className="relative max-w-6xl mx-auto px-4 py-24 w-full">
+        <motion.div style={{ y: heroY, opacity: heroOpacity, willChange: 'transform, opacity' }}
+          className="relative max-w-6xl mx-auto px-4 py-24 w-full transform-gpu">
           <div className="grid lg:grid-cols-[1fr_1.1fr] gap-16 items-center">
 
             {/* Left: copy */}
@@ -667,19 +668,31 @@ export default function LandingPage() {
 }
 
 /* ─── Hero App Preview (right side) ─── */
+
+/* Deterministic pseudo-random để tránh hydration mismatch và re-randomize mỗi render */
+const WAVE_BARS = Array.from({ length: 32 }, (_, i) => {
+  const r = Math.abs(Math.sin((i + 1) * 12.9898) * 43758.5453) % 1;
+  return {
+    peak: (r * 40 + 8) / 48,
+    duration: 1.2 + r * 0.8,
+    delay: i * 0.04,
+  };
+});
+
 function HeroAppPreview() {
   const [activeTab, setActiveTab] = useState<'lessons' | 'shadowing' | 'streak'>('lessons');
 
   return (
     <div className="relative flex justify-center items-center">
       {/* Ambient glow behind card */}
-      <div className="absolute inset-0 bg-gradient-to-br from-violet-600/20 via-indigo-600/15 to-cyan-600/10 rounded-[36px] blur-3xl scale-90" />
+      <div className="absolute inset-0 bg-gradient-to-br from-violet-600/20 via-indigo-600/15 to-cyan-600/10 rounded-[36px] blur-3xl scale-90 transform-gpu" />
 
       {/* Device frame */}
       <motion.div
         animate={{ y: [0, -8, 0] }}
         transition={{ repeat: Infinity, duration: 5, ease: 'easeInOut' }}
-        className="relative w-full max-w-[380px]"
+        style={{ willChange: 'transform' }}
+        className="relative w-full max-w-[380px] transform-gpu"
       >
         {/* Outer shell */}
         <div className="relative bg-[#0d0d1c] border border-white/[0.12] rounded-[28px] shadow-2xl overflow-hidden">
@@ -786,11 +799,13 @@ function HeroAppPreview() {
                   <p className="text-[10px] text-white/30 uppercase tracking-widest font-semibold mb-3">Shadow practice</p>
                   {/* Waveform visualization */}
                   <div className="flex items-center gap-[3px] h-12 justify-center mb-4">
-                    {Array.from({ length: 32 }, (_, i) => (
+                    {WAVE_BARS.map((bar, i) => (
                       <motion.div key={i}
-                        className="w-1 rounded-full bg-gradient-to-t from-violet-600 to-cyan-400 opacity-70"
-                        animate={{ height: [4, Math.random() * 40 + 8, 4] }}
-                        transition={{ repeat: Infinity, duration: 1.2 + Math.random() * 0.8, delay: i * 0.04 }} />
+                        className="w-1 h-12 rounded-full bg-gradient-to-t from-violet-600 to-cyan-400 opacity-70 transform-gpu"
+                        style={{ willChange: 'transform' }}
+                        initial={{ scaleY: 4 / 48 }}
+                        animate={{ scaleY: [4 / 48, bar.peak, 4 / 48] }}
+                        transition={{ repeat: Infinity, duration: bar.duration, delay: bar.delay, ease: 'easeInOut' }} />
                     ))}
                   </div>
                   <div className="p-3 rounded-xl bg-white/[0.04] border border-white/[0.07] mb-3">

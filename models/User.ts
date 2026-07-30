@@ -74,6 +74,8 @@ const UserSchema = new Schema<IUser>(
   }
 )
 
+UserSchema.index({ resetPasswordExpires: 1 }, { sparse: true });
+
 const User = mongoose.models.User || mongoose.model<IUser>('User', UserSchema)
 
 export default User

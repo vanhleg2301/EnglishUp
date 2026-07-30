@@ -32,6 +32,10 @@
 | Admin | User management (list, edit role, delete) | ✅ Done |
 | Admin | Audit log (auto-refresh 30s) | ✅ Done |
 | Admin | Lesson detail view theo exercise type | ✅ Done |
+| Security | Rate limiting (10 req/15min/IP) trên login, register, forgot-password | ✅ Done |
+| Reliability | React Error Boundary trong AppShell | ✅ Done |
+| Gamification | Certificate cho SG Sprint hoàn thành (day 15) | ✅ Done |
+| Gamification | LinkedIn sharing từ Certificate modal | ✅ Done |
 | Onboarding | Goal selection + quick level check | ✅ Done |
 | PWA | Installable trên iOS/Android | ✅ Done |
 | PWA | Service Worker + offline caching | ✅ Done |
@@ -47,7 +51,11 @@
 - Mỗi ngày gồm: vocabulary phase → exercise phase → completion
 - Unlock tuần tự: ngày N+1 chỉ mở khi hoàn thành ngày N
 - Score được lưu per user vào MongoDB
-- Hoàn thành ngày 30 → trigger Certificate Canvas
+- Hoàn thành ngày 30 → trigger Certificate Canvas với nút LinkedIn share
+
+### SG Sprint (15 ngày)
+- Hoàn thành ngày 15 → trigger Certificate Canvas
+- Badge `sg-sprint-complete` được unlock khi completeDay(15)
 
 ### Vocabulary SRS (Spaced Repetition)
 - Algorithm SM-2 đơn giản hóa

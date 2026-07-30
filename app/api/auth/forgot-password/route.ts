@@ -2,6 +2,8 @@
 import { connectDB } from '@/lib/mongodb'
 import User from '@/models/User'
 import AuditLog from '@/models/AuditLog'
+import { sendPasswordResetEmail } from '@/lib/email'
+import { checkRateLimit, getClientIP } from '@/lib/rateLimit'
 
 async function sha256Hex(input: string): Promise<string> {
   const buffer = await crypto.subtle.digest(
@@ -14,6 +16,14 @@ async function sha256Hex(input: string): Promise<string> {
 }
 
 export async function POST(req: NextRequest) {
+  const { limited, retryAfterMs } = checkRateLimit(getClientIP(req));
+  if (limited) {
+    return NextResponse.json(
+      { success: false, error: 'Too many attempts. Please try again later.' },
+      { status: 429, headers: { 'Retry-After': String(Math.ceil(retryAfterMs / 1000)) } }
+    );
+  }
+
   try {
     const body = (await req.json()) as { email?: unknown }
     const { email } = body
@@ -44,6 +54,8 @@ export async function POST(req: NextRequest) {
     user.resetPasswordExpires = new Date(Date.now() + 60 * 60 * 1000) // 1 hour
     await user.save()
 
+    await sendPasswordResetEmail(user.email, resetCode)
+
     await AuditLog.create({
       action: 'FORGOT_PASSWORD',
       resource: 'auth',
@@ -55,7 +67,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      data: { resetCode },
+      data: { message: 'If the email exists, a reset code has been sent' },
     })
   } catch (err) {
     console.error('[forgot-password]', err)

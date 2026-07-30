@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Menu, Shield } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import Sidebar from './Sidebar';
+import { ErrorBoundary } from './ErrorBoundary';
 import { useAuth } from '@/contexts/AuthContext';
 import Link from 'next/link';
 
@@ -55,7 +56,9 @@ export default function AppShell({ children }: AppShellProps) {
         </div>
 
         <main className="flex-1">
-          {children}
+          <ErrorBoundary>
+            {children}
+          </ErrorBoundary>
         </main>
       </div>
     </div>

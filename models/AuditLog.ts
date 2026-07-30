@@ -45,6 +45,9 @@ const AuditLogSchema = new Schema<IAuditLog>(
   }
 )
 
+AuditLogSchema.index({ createdAt: 1 }, { expireAfterSeconds: 30 * 24 * 60 * 60 }); // TTL: 30 days
+AuditLogSchema.index({ userId: 1, createdAt: -1 });
+
 const AuditLog =
   mongoose.models.AuditLog ||
   mongoose.model<IAuditLog>('AuditLog', AuditLogSchema)

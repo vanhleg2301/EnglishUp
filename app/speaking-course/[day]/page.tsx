@@ -7,13 +7,17 @@ import Link from 'next/link';
 import {
   Volume2, Mic, MicOff, ChevronRight, ChevronLeft, CheckCircle,
   RotateCcw, Home, Clock, Play, Square, BookOpen, MessageSquare,
-  Layers, Zap, Users, ArrowLeft,
+  Layers, Zap, Users, ArrowLeft, Award,
 } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import { speakingDays } from '@/lib/speakingCourseData';
 import { useTTS, useSpeechRecognition, scorePronunciation } from '@/hooks/useSpeech';
+import { useBadges } from '@/hooks/useBadges';
 import AppShell from '@/components/AppShell';
 import PremiumGate from '@/components/PremiumGate';
 import { useAuth } from '@/contexts/AuthContext';
+
+const CertificateCanvas = dynamic(() => import('@/components/CertificateCanvas'), { ssr: false });
 
 type Phase = 'intro' | 'listen' | 'phrases' | 'shadow' | 'speak' | 'roleplay' | 'complete';
 
@@ -43,8 +47,11 @@ export default function SpeakingDayPage() {
   const [phraseFlipped, setPhraseFlipped] = useState(false);
   const [seenPhrases, setSeenPhrases] = useState<Set<number>>(new Set());
 
+  const [showCert, setShowCert] = useState(false);
+
   const { speak, stop } = useTTS();
   const { startListening, stopListening } = useSpeechRecognition();
+  const { trackSGSprintComplete } = useBadges();
   const playAllRef = useRef(false);
 
   useEffect(() => {
@@ -116,8 +123,12 @@ export default function SpeakingDayPage() {
         localStorage.setItem('sg-sprint-progress', JSON.stringify([...arr, day]));
       }
     } catch { /* ignore */ }
+    if (day === 15) {
+      trackSGSprintComplete();
+      try { localStorage.setItem('user-name', user?.name ?? ''); } catch {}
+    }
     setPhase('complete');
-  }, [day]);
+  }, [day, trackSGSprintComplete, user]);
 
   if (!dayData) {
     return (
@@ -785,8 +796,23 @@ export default function SpeakingDayPage() {
                   <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }} className="mt-4 p-5 rounded-2xl bg-gradient-to-r from-rose-500/20 to-pink-500/20 border border-rose-500/30 text-center">
                     <p className="text-2xl mb-2">🎉</p>
                     <p className="text-white font-bold">Course Complete!</p>
-                    <p className="text-white/40 text-sm mt-1">You're ready for Singapore. Good luck!</p>
+                    <p className="text-white/40 text-sm mt-1 mb-4">You're ready for Singapore. Good luck!</p>
+                    <button
+                      onClick={() => setShowCert(true)}
+                      className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/40 text-amber-300 font-bold hover:from-amber-500/30 hover:to-orange-500/30 transition-all"
+                    >
+                      <Award className="w-4 h-4" />
+                      Get Your Certificate
+                    </button>
                   </motion.div>
+                )}
+                {showCert && (
+                  <CertificateCanvas
+                    courseName="SG Speaking Sprint — 15 Days"
+                    completedDate={new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+                    xpEarned={1500}
+                    onClose={() => setShowCert(false)}
+                  />
                 )}
 
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.65 }} className="mt-6 flex gap-2">

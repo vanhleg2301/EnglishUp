@@ -3,8 +3,17 @@ import { connectDB } from '@/lib/mongodb'
 import User from '@/models/User'
 import AuditLog from '@/models/AuditLog'
 import { signToken, comparePassword, setAuthCookie } from '@/lib/auth'
+import { checkRateLimit, getClientIP } from '@/lib/rateLimit'
 
 export async function POST(req: NextRequest) {
+  const { limited, retryAfterMs } = checkRateLimit(getClientIP(req));
+  if (limited) {
+    return NextResponse.json(
+      { success: false, error: 'Too many attempts. Please try again later.' },
+      { status: 429, headers: { 'Retry-After': String(Math.ceil(retryAfterMs / 1000)) } }
+    );
+  }
+
   try {
     const body = (await req.json()) as { email?: unknown; password?: unknown }
     const { email, password } = body

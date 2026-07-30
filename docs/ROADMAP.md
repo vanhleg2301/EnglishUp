@@ -13,12 +13,13 @@ const CertificateCanvas = dynamic(() => import('@/components/CertificateCanvas')
 `public/sw.js` hiện chỉ register, chưa cache lesson data.  
 Thêm pre-cache cho `/app`, `/lesson/1..5`, `/vocabulary` → app dùng được offline.
 
-### P1.3 — MongoDB indexes
-Thêm index `{ createdAt: -1 }` cho `auditlogs` collection.  
-Thêm TTL index cho audit logs (tự xóa sau 30 ngày).
+### P1.3 — MongoDB indexes ✅ Done
+TTL index trên `auditlogs.createdAt` (tự xóa sau 30 ngày). Compound index `userId + createdAt`.  
+Index `totalXP` trên `Progress` cho leaderboard query. Index `resetPasswordExpires` trên `User`.
 
-### P1.4 — Error boundary
-Wrap các page phức tạp với React Error Boundary để tránh toàn app crash.
+### P1.4 — Error boundary ✅ Done
+`components/ErrorBoundary.tsx` — class component wrap trong `AppShell`.  
+Hiển thị friendly error UI + "Try again" button thay vì crash toàn app.
 
 ---
 
@@ -42,9 +43,9 @@ db.progresses.aggregate([
 ### P2.3 — Study Streak Reminder
 Khi user vào app và streak sắp mất (chưa học hôm nay), hiện banner nhắc nhở với countdown.
 
-### P2.4 — LinkedIn Certificate Sharing
-Thêm nút "Share to LinkedIn" sau khi download certificate.  
-Pre-fill: `I just completed the 30-Day English for Tech Professionals course!`
+### P2.4 — LinkedIn Certificate Sharing ✅ Done
+Nút LinkedIn trong `CertificateCanvas` — share offsite URL + pre-filled text.  
+Áp dụng cho cả 30-day lesson certificate và SG Sprint certificate.
 
 ### P2.5 — "Repeat Until Perfect" Mode trong Speaking
 Nếu pronunciation score < 70%, tự động retry với prompt khuyến khích.
@@ -57,9 +58,8 @@ Nếu pronunciation score < 70%, tự động retry với prompt khuyến khích
 Gửi email tóm tắt mỗi thứ 2: XP tuần này, streak, progress %.  
 Dùng Resend hoặc SendGrid.
 
-### P3.2 — Real SRS Backend Sync
-Hiện tại vocab SRS chỉ lưu localStorage → mất khi đổi thiết bị.  
-Thêm API `/api/vocab-srs` để sync với MongoDB.
+### P3.2 — Real SRS Backend Sync ✅ Done
+API `/api/vocab-srs` sync với MongoDB. Fallback localStorage khi offline.
 
 ### P3.3 — Custom Vocabulary List
 User thêm từ riêng vào SRS deck ngoài từ trong lesson.
@@ -93,10 +93,12 @@ Test different exercise sequences hoặc UI layouts để tối ưu engagement.
 
 ## Technical Debt
 
-| Issue | File | Impact |
-|---|---|---|
-| `any` type trong useSpeech.ts | `hooks/useSpeech.ts:98` | TypeScript safety |
-| Progress.ts dùng `userId: 'local'` default | `models/Progress.ts:15` | Confusing default |
-| Alert() trong useSpeech | `hooks/useSpeech.ts:106` | Bad UX, nên dùng toast |
-| Không có rate limiting trên API routes | `app/api/auth/*` | Security |
-| Stripe webhook chưa verify signature | `app/api/payment/*` | Security risk |
+| Issue | File | Impact | Status |
+|---|---|---|---|
+| `any` type trong useSpeech.ts | `hooks/useSpeech.ts:98` | TypeScript safety | Open |
+| Progress.ts dùng `userId: 'local'` default | `models/Progress.ts:15` | Confusing default | Open |
+| Alert() trong useSpeech | `hooks/useSpeech.ts:106` | Bad UX, nên dùng toast | Open |
+| Không có rate limiting trên API routes | `app/api/auth/*` | Security | ✅ Fixed |
+| Stripe webhook chưa verify signature | `app/api/payment/*` | Security risk | Open |
+| Không có Error Boundary | Pages crash toàn app | UX | ✅ Fixed |
+| MongoDB thiếu indexes | `models/AuditLog, Progress, User` | Performance | ✅ Fixed |

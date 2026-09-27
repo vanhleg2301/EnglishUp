@@ -44,6 +44,7 @@
 | IPA Phonetics | Bảng phiên âm + pronunciation guide | ✅ Done |
 | Sources | Trang nguồn tài liệu tham khảo | ✅ Done |
 | Landing Page | Landing page với pricing | ✅ Done |
+| Games | Wavelength — party game đoán vị trí trên thang, custom teams/luật/bộ thẻ | ✅ Done |
 
 ## Chi tiết các tính năng chính
 
@@ -91,3 +92,10 @@
 | Intermediate 🔵 | 1,500 – 3,999 |
 | Advanced 💜 | 4,000 – 9,999 |
 | Master 👑 | 10,000+ |
+
+### Wavelength (`/wavelength`)
+- Party game chơi chung 1 thiết bị: Psychic xem vị trí mục tiêu bí mật trên dial nửa vòng tròn, đưa ra 1 gợi ý tiếng Anh, team kéo kim để đoán.
+- Tính điểm theo vùng: trúng tâm 4đ, gần 3đ, xa hơn 2đ; đội đầu tiên đạt số điểm mục tiêu thắng.
+- Thẻ (cặp từ trái nghĩa) được xáo ngẫu nhiên, không lặp lại cho tới khi hết bộ; Psychic có thể đổi thẻ.
+- Tuỳ chỉnh: 1–4 đội (đổi tên), điểm thắng (5/10/15/20), đồng hồ đoán (Off/30/60/90s, hết giờ tự khoá), độ khó (kích thước vùng điểm), chọn nhóm thẻ, thêm thẻ riêng (mỗi dòng `Left | Right`).
+- Cài đặt và thẻ riêng lưu trong localStorage. Dữ liệu thẻ: `lib/wavelengthData.ts`.

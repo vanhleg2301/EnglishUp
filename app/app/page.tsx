@@ -6,7 +6,7 @@ import Link from 'next/link';
 import {
   Flame, Zap, Lock, CheckCircle, Star,
   ChevronRight, Layers, MessageSquare, Music2, Clock, Link2, LayoutGrid, Bot,
-  Target, TrendingUp, Mic2, Trophy, Library,
+  Target, TrendingUp, Mic2, Trophy, Library, Gauge,
 } from 'lucide-react';
 import { useProgress } from '@/hooks/useProgress';
 import { useDailyChallenge } from '@/hooks/useDailyChallenge';
@@ -90,6 +90,15 @@ const FEATURES: Feature[] = [
     title: 'IPA Phonetics',
     desc: 'Sounds Vietnamese speakers struggle with most',
     color: 'text-pink-400',
+  },
+  {
+    id: 'wavelength',
+    href: '/wavelength',
+    icon: Gauge,
+    title: 'Wavelength',
+    desc: 'Party game: give English clues on a spectrum',
+    color: 'text-orange-400',
+    badge: { label: 'NEW', color: 'bg-orange-500/20 text-orange-300 border-orange-500/30' },
   },
   {
     id: 'leaderboard',

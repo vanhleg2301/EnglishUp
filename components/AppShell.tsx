@@ -19,6 +19,7 @@ const PAGE_LABELS: Record<string, string> = {
   '/phrases': 'Phrases & Chunks',
   '/conversation': 'Conversations',
   '/alphabet': 'IPA Phonetics',
+  '/wavelength': 'Wavelength',
   '/ai-chat': 'AI Chat',
   '/profile': 'Profile',
   '/pricing': 'Pricing',

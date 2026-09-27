@@ -97,5 +97,5 @@
 - Party game chơi chung 1 thiết bị: Psychic xem vị trí mục tiêu bí mật trên dial nửa vòng tròn, đưa ra 1 gợi ý tiếng Anh, team kéo kim để đoán.
 - Tính điểm theo vùng: trúng tâm 4đ, gần 3đ, xa hơn 2đ; đội đầu tiên đạt số điểm mục tiêu thắng.
 - Thẻ (cặp từ trái nghĩa) được xáo ngẫu nhiên, không lặp lại cho tới khi hết bộ; Psychic có thể đổi thẻ.
-- Tuỳ chỉnh: 1–4 đội (đổi tên), điểm thắng (5/10/15/20), đồng hồ đoán (Off/30/60/90s, hết giờ tự khoá), độ khó (kích thước vùng điểm), chọn nhóm thẻ, thêm thẻ riêng (mỗi dòng `Left | Right`).
-- Cài đặt và thẻ riêng lưu trong localStorage. Dữ liệu thẻ: `lib/wavelengthData.ts`.
+- Tuỳ chỉnh: 1–4 đội (đổi tên), điểm thắng (5/10/15/20), đồng hồ đoán (Off/30/60/90s, hết giờ tự khoá), độ khó (kích thước vùng điểm), chọn nhóm thẻ (Movies, Love & Relationships, Everyday, Food & Drink, People & Feelings, Work & Tech, Abstract, Culture & Fun — 126 thẻ), thêm thẻ riêng (mỗi dòng `Left | Right`).
+- Cài đặt và thẻ riêng lưu trong localStorage; nhóm thẻ mới thêm sau này tự bật cho người đã lưu cài đặt (`seenCats`). Dữ liệu thẻ: `lib/wavelengthData.ts`.

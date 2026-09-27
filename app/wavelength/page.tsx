@@ -23,6 +23,8 @@ interface Settings {
   difficulty: Difficulty;
   categories: WavelengthCategory[];
   includeCustom: boolean;
+  /** Categories that existed when settings were last saved — newer ones get switched on. */
+  seenCats: WavelengthCategory[];
 }
 
 const DEFAULT_SETTINGS: Settings = {
@@ -32,7 +34,10 @@ const DEFAULT_SETTINGS: Settings = {
   difficulty: 'normal',
   categories: WAVELENGTH_CATEGORIES.map((c) => c.id),
   includeCustom: true,
+  seenCats: WAVELENGTH_CATEGORIES.map((c) => c.id),
 };
+
+const LEGACY_CATS: WavelengthCategory[] = ['everyday', 'food', 'people', 'work', 'abstract', 'culture'];
 
 const TEAM_COLORS = [
   { text: 'text-sky-300', bg: 'bg-sky-500/15', border: 'border-sky-400/40', dot: 'bg-sky-400' },
@@ -289,10 +294,13 @@ export default function WavelengthPage() {
 }
 
 function WavelengthGame() {
-  const [settings, setSettings] = useState<Settings>(() => ({
-    ...DEFAULT_SETTINGS,
-    ...readStored<Partial<Settings>>(SETTINGS_KEY, {}),
-  }));
+  const [settings, setSettings] = useState<Settings>(() => {
+    const saved = readStored<Partial<Settings>>(SETTINGS_KEY, {});
+    const seen = saved.seenCats ?? LEGACY_CATS;
+    const merged = { ...DEFAULT_SETTINGS, ...saved };
+    const added = DEFAULT_SETTINGS.categories.filter((c) => !seen.includes(c) && !merged.categories.includes(c));
+    return { ...merged, categories: [...merged.categories, ...added], seenCats: DEFAULT_SETTINGS.seenCats };
+  });
   const [customCards, setCustomCards] = useState<SpectrumCard[]>(() => readStored(CUSTOM_KEY, []));
   const [bulkText, setBulkText] = useState('');
 

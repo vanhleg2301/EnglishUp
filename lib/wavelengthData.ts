@@ -8,18 +8,75 @@ export interface SpectrumCard {
   category: WavelengthCategory | 'custom';
 }
 
-export type WavelengthCategory = 'everyday' | 'food' | 'people' | 'work' | 'abstract' | 'culture';
+export type WavelengthCategory =
+  | 'movies' | 'relationships' | 'everyday' | 'food' | 'people' | 'work' | 'abstract' | 'culture';
 
 export const WAVELENGTH_CATEGORIES: { id: WavelengthCategory; label: string; emoji: string }[] = [
+  { id: 'movies', label: 'Movies', emoji: '🎬' },
+  { id: 'relationships', label: 'Love & Relationships', emoji: '💘' },
   { id: 'everyday', label: 'Everyday', emoji: '🏠' },
   { id: 'food', label: 'Food & Drink', emoji: '🍜' },
   { id: 'people', label: 'People & Feelings', emoji: '🧑' },
   { id: 'work', label: 'Work & Tech', emoji: '💼' },
   { id: 'abstract', label: 'Abstract', emoji: '🌀' },
-  { id: 'culture', label: 'Culture & Fun', emoji: '🎬' },
+  { id: 'culture', label: 'Culture & Fun', emoji: '🎉' },
 ];
 
 const RAW: Record<WavelengthCategory, [string, string][]> = {
+  movies: [
+    ['Flop', 'Blockbuster'],
+    ['Terrible acting', 'Oscar-worthy acting'],
+    ['Forgettable villain', 'Iconic villain'],
+    ['Worst movie ending', 'Best movie ending'],
+    ['Boring plot', 'Mind-blowing plot twist'],
+    ['Low-budget movie', 'Big-budget movie'],
+    ['Tearjerker', 'Comedy'],
+    ['Overrated movie', 'Underrated movie'],
+    ['Bad remake', 'Better than the original'],
+    ['Slow-paced', 'Action-packed'],
+    ['Guilty pleasure movie', 'Movie critics love'],
+    ['Unrealistic movie', 'Realistic movie'],
+    ['Forgettable soundtrack', 'Iconic soundtrack'],
+    ['Bad first-date movie', 'Perfect first-date movie'],
+    ['Background character', 'Main character'],
+    ['Bad sequel', 'Great sequel'],
+    ['Cheesy movie line', 'Legendary movie quote'],
+    ['Annoying movie couple', 'Beloved movie couple'],
+    ['Tiny spoiler', 'Huge spoiler'],
+    ['Too short', 'Way too long'],
+    ['Worst superhero', 'Best superhero'],
+    ['Not scary at all', 'Terrifying'],
+    ['Predictable', 'Unpredictable'],
+    ['Kids’ cartoon', 'Adults-only movie'],
+    ['Movie you watch once', 'Movie you rewatch forever'],
+  ],
+  relationships: [
+    ['Red flag', 'Green flag'],
+    ['Bad first date', 'Perfect first date'],
+    ['Just friends', 'Soulmates'],
+    ['Tiny crush', 'True love'],
+    ['Terrible pickup line', 'Smooth pickup line'],
+    ['Cheap date', 'Expensive date'],
+    ['Too clingy', 'Too distant'],
+    ['Bad breakup excuse', 'Good breakup excuse'],
+    ['Too early to say “I love you”', 'Way too late to say it'],
+    ['Boring couple activity', 'Romantic couple activity'],
+    ['Bad anniversary gift', 'Perfect anniversary gift'],
+    ['Toxic relationship', 'Healthy relationship'],
+    ['Awkward moment', 'Smooth moment'],
+    ['Deal-breaker', 'Totally fine'],
+    ['Normal text to your ex', 'Weird text to your ex'],
+    ['Secret you keep', 'Secret you share with your partner'],
+    ['Bad reason to get married', 'Good reason to get married'],
+    ['A little jealous', 'Crazy jealous'],
+    ['Situationship', 'Serious relationship'],
+    ['Low-effort partner', 'High-effort partner'],
+    ['Bad wedding idea', 'Dream wedding idea'],
+    ['No big deal to forget', 'Worst thing to forget'],
+    ['Forgivable mistake', 'Unforgivable mistake'],
+    ['Not enough PDA', 'Way too much PDA'],
+    ['Bad relationship advice', 'Great relationship advice'],
+  ],
   everyday: [
     ['Cold', 'Hot'],
     ['Cheap', 'Expensive'],

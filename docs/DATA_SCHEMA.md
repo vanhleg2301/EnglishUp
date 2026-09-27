@@ -77,7 +77,7 @@
 | `eng-badges` | `useBadges` | `BadgeData` JSON | Persistent |
 | `eng-daily-challenge` | `useDailyChallenge` | challenge state JSON | Persistent |
 | `eng-shadowing` | ShadowingPlayer | scores per sentence ID | Persistent |
-| `eng-wavelength-settings` | `/wavelength` page | `{ teams, targetScore, timer, difficulty, categories, includeCustom }` JSON | Persistent |
+| `eng-wavelength-settings` | `/wavelength` page | `{ teams, targetScore, timer, difficulty, categories, includeCustom, seenCats }` JSON | Persistent |
 | `eng-wavelength-custom-cards` | `/wavelength` page | `SpectrumCard[]` JSON (`{ id, left, right, category: 'custom' }`) | Persistent |
 
 ### SRSCard schema (eng-vocab-srs)

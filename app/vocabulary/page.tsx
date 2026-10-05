@@ -8,6 +8,7 @@ import { useProgress } from '@/hooks/useProgress';
 import { lessons } from '@/lib/lessonData';
 import PremiumGate from '@/components/PremiumGate';
 import { useAuth } from '@/contexts/AuthContext';
+import { FAST_TALK_SRS_SOURCE_OFFSET } from '@/lib/fastTalk';
 
 const RATING_BUTTONS: { rating: SRSRating; label: string; color: string; days: string }[] = [
   { rating: 0, label: 'Again', color: 'bg-red-500/15 border-red-500/30 text-red-300 hover:bg-red-500/25', days: '1d' },
@@ -226,7 +227,11 @@ export default function VocabularyPage() {
               </AnimatePresence>
 
               {/* Day source badge */}
-              <p className="text-center text-xs text-white/20 mt-4">Day {current.sourceDay}</p>
+              <p className="text-center text-xs text-white/20 mt-4">
+                {current.sourceDay >= FAST_TALK_SRS_SOURCE_OFFSET
+                  ? `Fast Talk · Bài ${current.sourceDay - FAST_TALK_SRS_SOURCE_OFFSET}`
+                  : `Day ${current.sourceDay}`}
+              </p>
             </motion.div>
           )}
         </AnimatePresence>

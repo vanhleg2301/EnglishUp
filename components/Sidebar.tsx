@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 import {
   LayoutGrid, BookOpen, Bot, Layers,
   MessageSquare, Music2, Target, Flame, Zap, LogOut, X, Mic2, Library, Trophy,
-  Shield, Crown,
+  Shield, Crown, Rocket,
 } from 'lucide-react';
 import { useProgress } from '@/hooks/useProgress';
 import { useDailyChallenge } from '@/hooks/useDailyChallenge';
@@ -42,6 +42,7 @@ const NAV: { section: string; items: NavItem[] }[] = [
   {
     section: 'Learn',
     items: [
+      { href: '/fast-talk', icon: Rocket, label: 'Fast Talk', matchPrefix: '/fast-talk', badge: 'NEW' },
       { href: '/lesson/1', icon: BookOpen, label: 'Lessons', matchPrefix: '/lesson' },
       { href: '/ai-chat', icon: Bot, label: 'AI Chat', badge: 'PRO' },
       { href: '/shadowing', icon: Layers, label: 'Shadowing' },

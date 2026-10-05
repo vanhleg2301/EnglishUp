@@ -15,7 +15,7 @@ const FEMALE_VOICE_PREFS = [
   'Victoria',
 ];
 
-function pickFemaleVoice(): SpeechSynthesisVoice | null {
+export function pickFemaleVoice(): SpeechSynthesisVoice | null {
   if (typeof window === 'undefined') return null;
   const voices = window.speechSynthesis.getVoices();
   const enVoices = voices.filter((v) => v.lang.startsWith('en'));

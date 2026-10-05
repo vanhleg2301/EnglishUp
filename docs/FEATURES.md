@@ -23,6 +23,7 @@
 | AI Chat | Giao tiếp với AI (Anthropic API) | ✅ Done |
 | AI Chat | Premium gate (free vs Pro) | ✅ Done |
 | Speaking | SG Sprint — 15-day speaking course | ✅ Done |
+| Fast Talk | 20 bài giao tiếp nhanh A2+ → B1 (đời sống + công sở), miễn phí | ✅ Done |
 | Gamification | 8 badges với unlock logic | ✅ Done |
 | Gamification | Leaderboard (mock data + user's real XP) | ✅ Done |
 | Gamification | Certificate Canvas khi hoàn thành | ✅ Done |
@@ -53,6 +54,17 @@
 - Unlock tuần tự: ngày N+1 chỉ mở khi hoàn thành ngày N
 - Score được lưu per user vào MongoDB
 - Hoàn thành ngày 30 → trigger Certificate Canvas với nút LinkedIn share
+
+### Fast Talk (20 bài, A2+ → B1)
+- Mục tiêu: giao tiếp nhanh bằng cụm từ dùng hằng ngày. 10 bài A2+ (1–10) và 10 bài B1 (11–20), xen kẽ chủ đề đời sống và công sở.
+- Route: `/fast-talk` (danh sách, lọc theo trình độ/chủ đề) và `/fast-talk/[unit]`. Không khoá Pro, mọi bài đều mở.
+- Mỗi bài có 4 bước:
+  1. **Nghe hiểu**: hội thoại phát bằng TTS ở tốc độ thật (có nút chậm), trả lời 2 câu hỏi trước khi xem lời thoại, kèm ghi chú nối âm/nuốt âm.
+  2. **Cụm từ**: 8 cụm kèm ví dụ, nghe và nói đè theo (chấm điểm nếu trình duyệt hỗ trợ nhận giọng nói).
+  3. **Phản xạ**: 6 câu + 4 câu theo một khung câu; nhìn tiếng Việt, nói tiếng Anh trong 7 giây (A2+) hoặc 5 giây (B1). Điểm ≥ 70% là đạt; câu sai được hỏi lại một lần cuối vòng. Không có nhận giọng nói thì tự đánh giá.
+  4. **Nhập vai**: hội thoại theo kịch bản, người kia tự đọc, người học nói ý được gợi bằng tiếng Việt.
+- Hoàn thành: +40 XP (lần đầu), 8 cụm được thêm vào Vocabulary SRS (`sourceDay = 1000 + unitId`), lưu tiến độ vào localStorage `fast-talk-progress`.
+- Dữ liệu: `lib/fastTalk/` (`unitsA2.ts`, `unitsB1.ts`, `types.ts`). Giao diện: `components/fastTalk/`.
 
 ### SG Sprint (15 ngày)
 - Hoàn thành ngày 15 → trigger Certificate Canvas

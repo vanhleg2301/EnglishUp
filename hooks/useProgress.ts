@@ -27,7 +27,9 @@ export function useProgress() {
         const data = await res.json();
         if (mounted.current) setProgress(data);
       } else {
-        if (mounted.current) setProgress(DEFAULT_PROGRESS);
+        // Not logged in (guest mode) — progress lives in localStorage.
+        const saved = localStorage.getItem('eng-progress');
+        if (mounted.current) setProgress(saved ? JSON.parse(saved) : DEFAULT_PROGRESS);
       }
     } catch {
       const saved = localStorage.getItem('eng-progress');

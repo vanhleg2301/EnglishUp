@@ -7,8 +7,10 @@ import { useVocabSRS, SRSRating } from '@/hooks/useVocabSRS';
 import { useProgress } from '@/hooks/useProgress';
 import { lessons } from '@/lib/lessonData';
 import PremiumGate from '@/components/PremiumGate';
+import { hasFullAccess } from '@/lib/access';
 import { useAuth } from '@/contexts/AuthContext';
 import { FAST_TALK_SRS_SOURCE_OFFSET } from '@/lib/fastTalk';
+import { A1_SRS_SOURCE_OFFSET } from '@/lib/a1';
 
 const RATING_BUTTONS: { rating: SRSRating; label: string; color: string; days: string }[] = [
   { rating: 0, label: 'Again', color: 'bg-red-500/15 border-red-500/30 text-red-300 hover:bg-red-500/25', days: '1d' },
@@ -81,7 +83,7 @@ export default function VocabularyPage() {
     );
   }
 
-  const isPremium = user?.role === 'admin' || user?.subscription?.status === 'active';
+  const isPremium = hasFullAccess(user);
   if (!isPremium) {
     return <PremiumGate mode="fullscreen" featureName="Vocabulary SRS" />;
   }
@@ -228,7 +230,9 @@ export default function VocabularyPage() {
 
               {/* Day source badge */}
               <p className="text-center text-xs text-white/20 mt-4">
-                {current.sourceDay >= FAST_TALK_SRS_SOURCE_OFFSET
+                {current.sourceDay >= A1_SRS_SOURCE_OFFSET
+                  ? `A1 · Ngày ${current.sourceDay - A1_SRS_SOURCE_OFFSET}`
+                  : current.sourceDay >= FAST_TALK_SRS_SOURCE_OFFSET
                   ? `Fast Talk · Bài ${current.sourceDay - FAST_TALK_SRS_SOURCE_OFFSET}`
                   : `Day ${current.sourceDay}`}
               </p>

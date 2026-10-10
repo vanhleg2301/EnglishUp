@@ -72,11 +72,12 @@
 
 | Key | Hook | Format | TTL |
 |---|---|---|---|
-| `eng-progress` | `useProgress` | `UserProgress` JSON | Persistent |
+| `eng-progress` | `useProgress` | `UserProgress` JSON (nguồn chính khi chưa đăng nhập) | Persistent |
 | `eng-vocab-srs` | `useVocabSRS` | `SRSCard[]` JSON | Persistent |
 | `eng-badges` | `useBadges` | `BadgeData` JSON | Persistent |
 | `eng-daily-challenge` | `useDailyChallenge` | challenge state JSON | Persistent |
 | `eng-shadowing` | ShadowingPlayer | scores per sentence ID | Persistent |
+| `a1-progress` | `useA1Progress` (`lib/a1`) | `number[]` — các ngày A1 đã hoàn thành | Persistent |
 | `fast-talk-progress` | `useFastTalkProgress` (`lib/fastTalk`) | `number[]` — id các bài Fast Talk đã hoàn thành | Persistent |
 
 ### SRSCard schema (eng-vocab-srs)
@@ -87,7 +88,7 @@
   phonetic: string,
   example: string,
   exampleTranslation?: string,
-  sourceDay: number,     // lesson day (1–30); Fast Talk cards dùng 1000 + unitId
+  sourceDay: number,     // lesson day (1–30); Fast Talk: 1000 + unitId; A1: 2000 + day
   interval: number,       // current review interval in days
   ease: number,           // ease factor (min 1.3, default 2.5)
   reviews: number,        // total reviews done

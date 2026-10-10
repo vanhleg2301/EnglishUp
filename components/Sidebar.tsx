@@ -7,13 +7,14 @@ import { usePathname } from 'next/navigation';
 import {
   LayoutGrid, BookOpen, Bot, Layers,
   MessageSquare, Music2, Target, Flame, Zap, LogOut, X, Mic2, Library, Trophy,
-  Shield, Crown, Rocket,
+  Shield, Crown, Rocket, Sprout,
 } from 'lucide-react';
 import { useProgress } from '@/hooks/useProgress';
 import { useDailyChallenge } from '@/hooks/useDailyChallenge';
 import { getLevelInfo, getLevelProgress } from '@/lib/levels';
 import { useAuth } from '@/contexts/AuthContext';
 import { isNativeIOS } from '@/lib/platform';
+import { FREE_ACCESS } from '@/lib/access';
 import Logo from './Logo';
 
 interface SidebarProps {
@@ -42,7 +43,8 @@ const NAV: { section: string; items: NavItem[] }[] = [
   {
     section: 'Learn',
     items: [
-      { href: '/fast-talk', icon: Rocket, label: 'Fast Talk', matchPrefix: '/fast-talk', badge: 'NEW' },
+      { href: '/a1', icon: Sprout, label: 'A1 · 20 ngày', matchPrefix: '/a1', badge: 'NEW' },
+      { href: '/fast-talk', icon: Rocket, label: 'Fast Talk', matchPrefix: '/fast-talk' },
       { href: '/lesson/1', icon: BookOpen, label: 'Lessons', matchPrefix: '/lesson' },
       { href: '/ai-chat', icon: Bot, label: 'AI Chat', badge: 'PRO' },
       { href: '/shadowing', icon: Layers, label: 'Shadowing' },
@@ -220,7 +222,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         )}
 
         {/* Upgrade banner (free users) — hidden on iOS native (Apple 3.1.1: no external purchase links) */}
-        {user?.subscription?.status === 'free' && !isNativeIOS() && (
+        {!FREE_ACCESS && user?.subscription?.status === 'free' && !isNativeIOS() && (
           <div className="px-3 pb-1">
             <Link href="/pricing" onClick={onClose}>
               <div className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-violet-500/10 border border-violet-500/20 hover:bg-violet-500/15 transition-colors">
@@ -253,6 +255,11 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                   Sign out
                 </button>
               </div>
+            </div>
+          ) : !user ? (
+            <div className="px-3 py-2 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+              <p className="text-xs font-semibold text-white/60">Chế độ khách</p>
+              <p className="text-[10px] text-white/30 mt-0.5">Tiến độ lưu trên trình duyệt này</p>
             </div>
           ) : (
             <div className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-white/[0.03] border border-white/[0.06] group">

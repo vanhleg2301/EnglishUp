@@ -5,6 +5,8 @@
 | Danh mục | Tính năng | Trạng thái |
 |---|---|---|
 | Auth | Email/password + Google OAuth | ✅ Done |
+| Auth | Chế độ khách: dùng app không cần đăng nhập (tạm thời), tiến độ lưu localStorage | ✅ Done |
+| Access | `FREE_ACCESS` mở khoá Lessons, SG Sprint, Vocabulary SRS (AI Chat vẫn cần Pro) | ✅ Done |
 | Auth | Forgot password / reset | ✅ Done |
 | Learning | 30-day lesson roadmap | ✅ Done |
 | Learning | 7 loại bài tập (MCQ, fill-blank, word-order, listen-choose, word-match, speaking, pronunciation) | ✅ Done |
@@ -23,6 +25,7 @@
 | AI Chat | Giao tiếp với AI (Anthropic API) | ✅ Done |
 | AI Chat | Premium gate (free vs Pro) | ✅ Done |
 | Speaking | SG Sprint — 15-day speaking course | ✅ Done |
+| A1 Course | A1 trong 20 ngày: nghe hiểu + giao tiếp cơ bản theo comprehensible input | ✅ Done |
 | Fast Talk | 20 bài giao tiếp nhanh A2+ → B1 (đời sống + công sở), miễn phí | ✅ Done |
 | Gamification | 8 badges với unlock logic | ✅ Done |
 | Gamification | Leaderboard (mock data + user's real XP) | ✅ Done |
@@ -54,6 +57,17 @@
 - Unlock tuần tự: ngày N+1 chỉ mở khi hoàn thành ngày N
 - Score được lưu per user vào MongoDB
 - Hoàn thành ngày 30 → trigger Certificate Canvas với nút LinkedIn share
+
+### A1 trong 20 ngày
+- Route: `/a1` (danh sách 20 ngày) và `/a1/[day]`. Miễn phí, không cần đăng nhập, mọi ngày đều mở.
+- Chủ đề: chào hỏi, số, quê quán, gia đình, nghề nghiệp, một ngày, đồ ăn, gọi món, mua sắm, quần áo, nhà ở, địa điểm, đi lại, thời tiết, hẹn gặp, sở thích, sức khoẻ, khách sạn, cuối tuần trước (quá khứ), tổng ôn và dự định (going to).
+- Mỗi ngày 4 bước theo comprehensible input:
+  1. **Từ mới qua ngữ cảnh**: 8 từ, mỗi từ có hình (emoji) + 2 câu ví dụ đọc chậm; người học tự đoán, bấm mới hiện nghĩa tiếng Việt.
+  2. **Nghe câu chuyện**: truyện ngắn dùng lại các từ mới; từ mới tô xanh, bấm để xem nghĩa; mỗi câu có nút nghe và nút dịch; 4 câu hỏi Yes/No nghe bằng tai.
+  3. **Hội thoại**: nghe cả bài (2 giọng), nói theo các câu của "Bạn" (có chấm điểm nếu trình duyệt hỗ trợ).
+  4. **Nói về bạn**: 4 câu hỏi cá nhân; app hiện câu nó nghe được và câu mẫu, không chấm điểm vì câu trả lời mỗi người khác nhau.
+- Hoàn thành: +30 XP (lần đầu), 8 từ vào Vocabulary SRS (`sourceDay = 2000 + day`), tiến độ lưu localStorage `a1-progress`.
+- Dữ liệu: `lib/a1/` (`days1to5.ts` … `days16to20.ts`, `types.ts`). Giao diện: `components/a1/`, dùng lại TTS/ghi âm từ `components/fastTalk/shared.tsx`.
 
 ### Fast Talk (20 bài, A2+ → B1)
 - Mục tiêu: giao tiếp nhanh bằng cụm từ dùng hằng ngày. 10 bài A2+ (1–10) và 10 bài B1 (11–20), xen kẽ chủ đề đời sống và công sở.

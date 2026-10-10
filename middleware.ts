@@ -22,7 +22,8 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const token = req.cookies.get('auth-token')?.value;
 
-  const isProtectedApp = pathname.startsWith('/app') || pathname.startsWith('/profile');
+  // Guest mode: the learning app is open without an account; only /admin needs a login.
+  const isProtectedApp = false;
   const isAdmin = pathname.startsWith('/admin');
   const isAuth = pathname.startsWith('/auth');
 

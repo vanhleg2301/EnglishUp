@@ -17,6 +17,7 @@ import WordMatch from '@/components/exercises/WordMatch';
 import Speaking from '@/components/exercises/Speaking';
 import PronunciationCheck from '@/components/exercises/PronunciationCheck';
 import PremiumGate from '@/components/PremiumGate';
+import { hasFullAccess } from '@/lib/access';
 import { useAuth } from '@/contexts/AuthContext';
 import type { Exercise } from '@/types';
 
@@ -112,7 +113,7 @@ export default function LessonPage() {
     setFeedbackQuestion(null);
   };
 
-  const isPremium = user?.role === 'admin' || user?.subscription?.status === 'active';
+  const isPremium = hasFullAccess(user);
   if (day > 1 && !isPremium) {
     return <PremiumGate mode="fullscreen" featureName={`Day ${day} Lesson`} />;
   }

@@ -15,6 +15,7 @@ import { useTTS, useSpeechRecognition, scorePronunciation } from '@/hooks/useSpe
 import { useBadges } from '@/hooks/useBadges';
 import AppShell from '@/components/AppShell';
 import PremiumGate from '@/components/PremiumGate';
+import { hasFullAccess } from '@/lib/access';
 import { useAuth } from '@/contexts/AuthContext';
 
 const CertificateCanvas = dynamic(() => import('@/components/CertificateCanvas'), { ssr: false });
@@ -145,7 +146,7 @@ export default function SpeakingDayPage() {
 
   const phaseIndex = PHASES.findIndex((p) => p.id === phase);
 
-  const isPremium = user?.role === 'admin' || user?.subscription?.status === 'active';
+  const isPremium = hasFullAccess(user);
   if (!isPremium) {
     return <PremiumGate mode="fullscreen" featureName="SG Speaking Sprint" />;
   }

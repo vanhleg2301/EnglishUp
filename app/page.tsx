@@ -246,10 +246,7 @@ export default function LandingPage() {
             ))}
           </nav>
           <div className="flex items-center gap-2">
-            <Link href="/auth/login">
-              <button className="px-4 py-2 text-white/55 hover:text-white text-sm font-medium transition-colors">Log in</button>
-            </Link>
-            <Link href="/auth/signup">
+            <Link href="/a1">
               <motion.button
                 whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white text-black text-sm font-bold hover:bg-white/90 transition-colors"
@@ -303,11 +300,11 @@ export default function LandingPage() {
 
               <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.24 }}
                 className="flex flex-col sm:flex-row gap-3 mb-10">
-                <Link href="/app">
+                <Link href="/a1">
                   <motion.button whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(124,58,237,0.4)' }} whileTap={{ scale: 0.98 }}
                     className="flex items-center justify-center gap-2 px-7 py-3.5 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 font-bold text-base transition-all shadow-lg shadow-violet-500/30">
                     <Play className="w-4 h-4 fill-white" />
-                    Start Day 1 — Free
+                    Học A1 trong 20 ngày
                   </motion.button>
                 </Link>
                 <a href="#how-it-works">
